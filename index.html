@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MatKu - Belajar Matematika Seru!</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #FF6B9D; --pink-light: #FFD6E8;
+    --yellow: #FFD93D; --yellow-light: #FFF5CC;
+    --green: #6BCB77; --green-light: #D4F5D7;
+    --blue: #4D96FF; --blue-light: #D0E8FF;
+    --orange: #FF9A3C; --orange-light: #FFE5C8;
+    --purple: #9B59B6; --purple-light: #E8D5F5;
+    --red: #FF4757; --teal: #00C9A7;
+    --dark: #2C3E50; --white: #FFFFFF;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Nunito',sans-serif; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); min-height:100vh; overflow-x:hidden; }
+
+  /* ===== STARS ===== */
+  .star { position:fixed; border-radius:50%; animation:twinkle 2s infinite; pointer-events:none; z-index:0; }
+  @keyframes twinkle { 0%,100%{opacity:0.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
+
+  .main-container { max-width:1200px; margin:0 auto; padding:20px; position:relative; z-index:1; }
+
+  /* ===== HERO ===== */
+  .hero-title { font-family:'Fredoka One',cursive; font-size:3.5rem; text-align:center; color:#fff;
+    text-shadow:4px 4px 0px rgba(0,0,0,0.3); animation:bounce 1s ease infinite alternate; margin-bottom:5px; }
+  @keyframes bounce { from{transform:translateY(0)} to{transform:translateY(-10px)} }
+  .hero-sub { text-align:center; color:#FFD93D; font-size:1.3rem; font-weight:700; margin-bottom:15px; }
+
+  /* ===== MASCOT ===== */
+  .mascot-bar { display:flex; align-items:center; gap:15px; background:rgba(255,255,255,0.15); backdrop-filter:blur(10px);
+    border-radius:24px; padding:15px 25px; margin-bottom:20px; border:2px solid rgba(255,255,255,0.3); }
+  .mascot-face { font-size:3.5rem; animation:mascotBob 2s ease-in-out infinite; flex-shrink:0; color:var(--yellow); }
+  @keyframes mascotBob { 0%,100%{transform:rotate(-5deg) scale(1)} 50%{transform:rotate(5deg) scale(1.08)} }
+  .mascot-bubble { background:#fff; border-radius:20px 20px 20px 4px; padding:12px 18px; position:relative;
+    box-shadow:0 4px 15px rgba(0,0,0,0.15); flex:1; min-height:50px; display:flex; align-items:center; }
+  .mascot-text { font-size:1rem; font-weight:700; color:var(--dark); line-height:1.4; }
+  .mascot-name { font-family:'Fredoka One',cursive; font-size:0.8rem; color:var(--purple); margin-bottom:3px; }
+
+  /* ===== STATS BAR ===== */
+  .stats-bar { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:20px; }
+  .stat-pill { background:rgba(255,255,255,0.2); backdrop-filter:blur(5px); border:2px solid rgba(255,255,255,0.4);
+    border-radius:50px; padding:8px 20px; color:#fff; font-family:'Fredoka One',cursive; font-size:1rem;
+    display:flex; align-items:center; gap:8px; transition:all .3s; }
+  .stat-pill:hover { background:rgba(255,255,255,0.3); transform:scale(1.05); }
+  .stat-num { font-size:1.2rem; color:var(--yellow); text-shadow:1px 1px 0 rgba(0,0,0,0.3); }
+
+  /* ===== LEVEL BADGE ===== */
+  .level-badge { position:relative; }
+  .level-progress { width:80px; height:8px; background:rgba(255,255,255,0.2); border-radius:4px; margin-top:4px; overflow:hidden; }
+  .level-fill { height:100%; background:var(--yellow); border-radius:4px; transition:width 0.5s; }
+
+  /* ===== NAV ===== */
+  .nav-tabs-custom { display:flex; gap:15px; justify-content:center; margin-bottom:30px; flex-wrap:wrap; }
+  .nav-btn { padding:12px 28px; border:none; border-radius:50px; font-family:'Fredoka One',cursive;
+    font-size:1.1rem; cursor:pointer; transition:all .3s; box-shadow:0 6px 0 rgba(0,0,0,0.2); position:relative; top:0; }
+  .nav-btn:hover { top:-3px; box-shadow:0 9px 0 rgba(0,0,0,0.2); }
+  .nav-btn:active { top:3px; box-shadow:0 3px 0 rgba(0,0,0,0.2); }
+  .nav-btn.active { top:3px; box-shadow:0 3px 0 rgba(0,0,0,0.2); }
+  .btn-bangun { background:var(--pink); color:#fff; }
+  .btn-sudut { background:var(--yellow); color:var(--dark); }
+  .btn-kuis { background:var(--green); color:#fff; }
+  .btn-game { background:var(--orange); color:#fff; }
+  .btn-hitung { background:var(--teal); color:#fff; }
+
+  /* ===== SECTIONS ===== */
+  .section { display:none; animation:fadeIn .5s; }
+  .section.active { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  .card-fun { border-radius:24px; border:4px solid rgba(255,255,255,0.5);
+    background:rgba(255,255,255,0.95); box-shadow:0 10px 40px rgba(0,0,0,0.2); padding:25px; margin-bottom:25px; }
+  .section-title { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--purple); margin-bottom:20px; text-align:center; }
+
+  /* ===== SHAPE ===== */
+  .shape-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; }
+  .shape-card { border-radius:20px; padding:20px; text-align:center; cursor:pointer;
+    transition:all .3s; border:3px solid transparent; position:relative; overflow:hidden; }
+  .shape-card:hover { transform:scale(1.05) rotate(-2deg); border-color:var(--dark); }
+  .shape-card.selected { transform:scale(1.08); border-color:var(--dark); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
+  .shape-svg { width:100px; height:100px; margin:0 auto 10px; display:block; }
+  .shape-name { font-family:'Fredoka One',cursive; font-size:1.3rem; }
+
+  .formula-section { margin-top:25px; display:none; animation:slideDown .4s; }
+  .formula-section.show { display:block; }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+
+  .formula-box { background:linear-gradient(135deg,var(--yellow),var(--orange)); border-radius:20px;
+    padding:20px; margin-bottom:20px; box-shadow:0 5px 15px rgba(0,0,0,0.15); }
+  .formula-title { font-family:'Fredoka One',cursive; font-size:1.4rem; color:var(--dark); margin-bottom:10px; }
+  .formula-text { font-size:1.2rem; font-weight:700; color:var(--dark); background:rgba(255,255,255,0.7);
+    border-radius:12px; padding:10px 15px; display:inline-block; }
+
+  .calc-section { background:var(--blue-light); border-radius:20px; padding:20px; margin-top:15px; }
+  .calc-title { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--blue); margin-bottom:15px; }
+  .input-row { display:flex; gap:15px; align-items:center; flex-wrap:wrap; margin-bottom:15px; }
+  .calc-input { border:3px solid var(--blue); border-radius:12px; padding:10px 15px;
+    font-size:1.2rem; font-family:'Nunito',sans-serif; font-weight:700; width:120px; outline:none; text-align:center; }
+  .calc-input:focus { border-color:var(--purple); box-shadow:0 0 0 3px var(--purple-light); }
+  .calc-label { font-weight:700; font-size:1rem; color:var(--dark); }
+  .calc-btn { background:var(--blue); color:#fff; border:none; border-radius:12px; padding:12px 25px;
+    font-family:'Fredoka One',cursive; font-size:1.1rem; cursor:pointer; transition:all .3s;
+    box-shadow:0 4px 0 rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px;}
+  .calc-btn:hover { background:var(--purple); transform:translateY(-2px); }
+  .result-box { background:#fff; border-radius:15px; padding:15px; font-size:1.2rem; font-weight:700;
+    color:var(--dark); border:3px solid var(--green); display:none; text-align:center; }
+  .result-box.show { display:block; animation:popIn .4s; }
+  @keyframes popIn { 0%{transform:scale(0)} 70%{transform:scale(1.1)} 100%{transform:scale(1)} }
+
+  /* ===== SUDUT ===== */
+  .angle-protractor { position:relative; width:300px; height:160px; margin:0 auto; }
+  .angle-display { text-align:center; font-family:'Fredoka One',cursive; font-size:2.5rem; color:var(--red); margin-top:10px; }
+  .angle-label { font-size:1rem; font-weight:700; color:var(--dark); text-align:center; }
+
+  .angle-types { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px; margin-top:20px; }
+  .angle-type-card { border-radius:18px; padding:18px; text-align:center; cursor:pointer;
+    transition:all .3s; font-weight:700; border:3px solid transparent; }
+  .angle-type-card:hover { transform:translateY(-5px); border-color:var(--dark); }
+  .angle-type-card svg { margin:10px auto; display:block; }
+  .at-lancip { background:var(--yellow-light); color:#b8860b; }
+  .at-siku { background:var(--green-light); color:#2d6a2d; }
+  .at-tumpul { background:var(--blue-light); color:#1a4a8a; }
+  .at-lurus { background:var(--orange-light); color:#8a3a00; }
+  .at-reflex { background:var(--pink-light); color:#8a0050; }
+
+  .slider-section { margin:25px 0; }
+  .angle-slider { width:100%; height:12px; border-radius:6px; appearance:none;
+    background:linear-gradient(90deg,var(--green),var(--yellow),var(--orange),var(--red));
+    outline:none; cursor:pointer; }
+  .angle-slider::-webkit-slider-thumb { appearance:none; width:28px; height:28px;
+    border-radius:50%; background:#fff; border:3px solid var(--dark); cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,0.3); }
+
+  .drag-zone { min-height:120px; border:3px dashed #ccc; border-radius:16px; padding:15px;
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:#fafafa;
+    transition:all .3s; }
+  .drag-zone.dragover { background:var(--yellow-light); border-color:var(--yellow); transform:scale(1.02); }
+  .drag-zone.correct { background:var(--green-light); border-color:var(--green); }
+  .drag-zone.wrong { background:#FFE0E0; border-color:var(--red); }
+  .drag-item { padding:12px 20px; border-radius:12px; font-family:'Fredoka One',cursive;
+    font-size:1.1rem; cursor:grab; user-select:none; transition:all .3s;
+    box-shadow:0 4px 8px rgba(0,0,0,0.15); border:3px solid rgba(0,0,0,0.1); }
+  .drag-item:hover { transform:rotate(-3deg) scale(1.05); }
+  .drag-item:active { cursor:grabbing; opacity:0.7; }
+
+  .drop-targets { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px; }
+  .drop-label { font-family:'Fredoka One',cursive; font-size:1.2rem; margin-bottom:10px; }
+  .drop-area { min-height:90px; border:3px dashed rgba(0,0,0,0.2); border-radius:12px;
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center;
+    padding:10px; transition:all .3s; }
+  .drop-area.dragover { background:rgba(255,255,255,0.5); transform:scale(1.03); }
+
+  /* ===== QUIZ ===== */
+  .quiz-card { background:linear-gradient(135deg,var(--purple),#6c3483);
+    border-radius:24px; padding:30px; color:#fff; text-align:center; margin-bottom:25px; }
+  .quiz-q { font-family:'Fredoka One',cursive; font-size:1.6rem; margin-bottom:20px; }
+  .quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+  .quiz-opt { background:rgba(255,255,255,0.2); border:3px solid rgba(255,255,255,0.4);
+    border-radius:16px; padding:18px; font-family:'Fredoka One',cursive; font-size:1.2rem;
+    cursor:pointer; transition:all .3s; color:#fff; }
+  .quiz-opt:hover { background:rgba(255,255,255,0.35); transform:scale(1.05); }
+  .quiz-opt.correct { background:var(--green); border-color:#3a7a3a; color:#fff; }
+  .quiz-opt.wrong { background:var(--red); border-color:#8a1a1a; color:#fff; }
+
+  .score-display { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--yellow);
+    text-align:center; margin:15px 0; text-shadow:2px 2px 0 rgba(0,0,0,0.3); }
+  .progress-bar { height:20px; border-radius:10px; background:rgba(255,255,255,0.2);
+    margin-bottom:20px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--yellow),var(--orange));
+    border-radius:10px; transition:width .5s; }
+
+  /* ===== TIMER ===== */
+  .timer-ring { width:80px; height:80px; margin:0 auto 15px; }
+  .timer-ring circle { fill:none; stroke-width:6; transform:rotate(-90deg); transform-origin:50% 50%; }
+  .timer-track { stroke:rgba(255,255,255,0.2); }
+  .timer-fill { stroke:var(--yellow); stroke-dasharray:207; stroke-dashoffset:0; transition:stroke-dashoffset 1s linear; }
+  .timer-text { font-family:'Fredoka One',cursive; font-size:1.4rem; color:#fff; fill:#fff; }
+  .timer-urgent .timer-fill { stroke:var(--red); animation:timerPulse .5s infinite; }
+  @keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  /* ===== STREAK ===== */
+  .streak-display { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,#FF6B35,#FFD93D);
+    border-radius:50px; padding:8px 20px; font-family:'Fredoka One',cursive; font-size:1.1rem; color:#fff; margin:10px auto; }
+
+  /* ===== GAME SECTION ===== */
+  .game-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+  .game-card { border-radius:24px; padding:25px; text-align:center; cursor:pointer; transition:all .3s;
+    border:4px solid rgba(0,0,0,0.1); box-shadow:0 6px 20px rgba(0,0,0,0.15); }
+  .game-card:hover { transform:translateY(-8px) rotate(-1deg); box-shadow:0 15px 30px rgba(0,0,0,0.2); }
+  .game-icon { font-size:4rem; margin-bottom:15px; animation:gameIconBob 2s ease-in-out infinite; color: var(--dark); }
+  @keyframes gameIconBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .game-title { font-family:'Fredoka One',cursive; font-size:1.5rem; margin-bottom:8px; }
+  .game-desc { font-size:0.95rem; font-weight:600; opacity:0.8; }
+  .game-badge { display:inline-block; border-radius:50px; padding:4px 14px; font-size:0.8rem;
+    font-family:'Fredoka One',cursive; margin-top:10px; background:rgba(0,0,0,0.15); }
+
+  /* ===== TEBAK BAYANGAN GAME ===== */
+  .shadow-game { text-align:center; }
+  .shadow-shape { width:160px; height:160px; margin:20px auto; filter:brightness(0); opacity:0.7;
+    animation:shadowPulse 2s ease-in-out infinite; }
+  @keyframes shadowPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  .shadow-options { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+  .shadow-opt { border:3px solid transparent; border-radius:16px; padding:15px; cursor:pointer;
+    transition:all .3s; font-family:'Fredoka One',cursive; font-size:1rem; background:var(--blue-light); }
+  .shadow-opt:hover { transform:scale(1.05); border-color:var(--blue); }
+  .shadow-opt.correct { background:var(--green-light); border-color:var(--green); }
+  .shadow-opt.wrong { background:#FFE0E0; border-color:var(--red); }
+  .shadow-score { font-family:'Fredoka One',cursive; font-size:1.5rem; color:var(--purple); margin:15px 0; }
+
+  /* ===== HITUNG CEPAT GAME ===== */
+  .speed-game { text-align:center; }
+  .speed-question { font-family:'Fredoka One',cursive; font-size:3rem; color:var(--dark);
+    margin:20px 0; animation:questionPop .3s; }
+  @keyframes questionPop { 0%{transform:scale(0.5);opacity:0} 100%{transform:scale(1);opacity:1} }
+  .speed-input { border:4px solid var(--blue); border-radius:16px; padding:15px 20px;
+    font-size:2rem; font-family:'Fredoka One',cursive; text-align:center; width:150px; outline:none; }
+  .speed-input:focus { border-color:var(--purple); box-shadow:0 0 0 4px var(--purple-light); }
+  .speed-timer-bar { height:16px; background:#eee; border-radius:8px; overflow:hidden; margin:15px 0; }
+  .speed-timer-fill { height:100%; border-radius:8px; transition:width .1s linear; }
+  .combo-text { font-family:'Fredoka One',cursive; font-size:1.2rem; color:var(--orange); }
+
+  /* ===== MEMORY MATCH ===== */
+  .memory-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; max-width:400px; margin:0 auto; }
+  .memory-card-wrap { perspective:500px; height:90px; cursor:pointer; }
+  .memory-card { width:100%; height:100%; position:relative; transform-style:preserve-3d;
+    transition:transform .4s; border-radius:14px; }
+  .memory-card.flipped { transform:rotateY(180deg); }
+  .memory-card.matched { transform:rotateY(180deg); }
+  .memory-front, .memory-back { position:absolute; width:100%; height:100%; backface-visibility:hidden;
+    border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-size:1.6rem; font-family:'Fredoka One',cursive; border:3px solid rgba(0,0,0,0.1); }
+  .memory-front { background:linear-gradient(135deg,var(--purple),#5a0090); color:#fff; }
+  .memory-back { background:#fff; transform:rotateY(180deg); }
+  .memory-back.matched-bg { background:var(--green-light); }
+
+  /* ===== CONGRATS ===== */
+  .congrats { display:none; text-align:center; padding:30px; animation:zoomIn .5s; }
+  @keyframes zoomIn { from{transform:scale(0)} to{transform:scale(1)} }
+  .congrats.show { display:block; }
+  .congrats-emoji { font-size:5rem; animation:spin .5s ease; color: var(--yellow); }
+  @keyframes spin { from{transform:rotate(-20deg) scale(0)} to{transform:rotate(0) scale(1)} }
+  .congrats-title { font-family:'Fredoka One',cursive; font-size:2.5rem; color:var(--purple); margin:15px 0; }
+
+  /* ===== REWARD ===== */
+  .reward-popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0);
+    background:#fff; border-radius:30px; padding:40px; text-align:center; z-index:9999;
+    box-shadow:0 20px 60px rgba(0,0,0,0.3); transition:transform .4s cubic-bezier(0.34,1.56,0.64,1); min-width:300px; }
+  .reward-popup.show { transform:translate(-50%,-50%) scale(1); }
+  .reward-emoji { font-size:4rem; color: var(--yellow); }
+  .reward-title { font-family:'Fredoka One',cursive; font-size:1.8rem; color:var(--purple); margin:10px 0; }
+  .reward-stars { font-size:1.5rem; letter-spacing:5px; color: var(--yellow); }
+  .reward-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9998; display:none; }
+  .reward-overlay.show { display:block; }
+
+  /* ===== SOUNDS ===== */
+  .sound-btn { background:var(--teal); color:#fff; border:none; border-radius:50px; padding:8px 20px;
+    font-family:'Fredoka One',cursive; font-size:0.95rem; cursor:pointer; display:inline-flex;
+    align-items:center; gap:8px; transition:all .3s; margin-top:10px; }
+  .sound-btn:hover { background:#00a388; transform:scale(1.05); }
+
+  /* ===== CELEBRATION ===== */
+  .celebration-particle { position:fixed; pointer-events:none; z-index:9999; font-size:2rem;
+    animation:particleFly 2s forwards; }
+  @keyframes particleFly {
+    0%{opacity:1;transform:translateY(0) rotate(0deg)}
+    100%{opacity:0;transform:translateY(-200px) rotate(720deg)}
+  }
+
+  .nav-inner { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:20px; }
+  .nav-inner-btn { padding:8px 20px; border:none; border-radius:50px; font-family:'Fredoka One',cursive;
+    font-size:0.95rem; cursor:pointer; transition:all .3s; background:rgba(255,255,255,0.3); color:var(--dark); }
+  .nav-inner-btn.active { background:var(--dark); color:#fff; }
+
+  .materi-box { display:none; }
+  .materi-box.active { display:block; animation:fadeIn .4s; }
+
+  .rumus-bank { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+
+  @media(max-width:600px) {
+    .hero-title{font-size:2.2rem}
+    .quiz-options{grid-template-columns:1fr}
+    .drop-targets{grid-template-columns:1fr}
+    .shape-grid{grid-template-columns:repeat(2,1fr)}
+    .memory-grid{grid-template-columns:repeat(3,1fr)}
+    .shadow-options{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<div class="reward-overlay" id="rewardOverlay" onclick="closeReward()"></div>
+<div class="reward-popup" id="rewardPopup">
+  <div class="reward-emoji" id="rewardEmoji"><i class="bi bi-trophy-fill"></i></div>
+  <div class="reward-title" id="rewardTitle">Luar Biasa!</div>
+  <div class="reward-stars" id="rewardStars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+  <div id="rewardMsg" style="font-size:1rem;color:#666;margin:10px 0;font-weight:700"></div>
+  <button class="calc-btn" onclick="closeReward()" style="margin-top:15px;background:var(--purple)"><i class="bi bi-check2-circle"></i> Sip, Terima Kasih!</button>
+</div>
+
+<div class="main-container">
+  <h1 class="hero-title"><i class="bi bi-stars text-warning"></i> MatKu <i class="bi bi-stars text-warning"></i></h1>
+  <p class="hero-sub">Belajar Matematika Jadi Seru & Menyenangkan!</p>
+
+  <div class="mascot-bar">
+    <div class="mascot-face" id="mascotFace"><i class="bi bi-robot"></i></div>
+    <div class="mascot-bubble">
+      <div>
+        <div class="mascot-name">Olly si Robot Pintar <i class="bi bi-stars"></i></div>
+        <div class="mascot-text" id="mascotText">Halo! Aku Olly! Yuk belajar matematika yang seru bersama-sama! Pilih menu di bawah ya!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-pill"><i class="bi bi-star-fill text-warning"></i> Bintang: <span class="stat-num" id="totalStars">0</span></div>
+    <div class="stat-pill level-badge"><i class="bi bi-award-fill text-warning"></i> Level: <span class="stat-num" id="levelNum">1</span>
+      <div class="level-progress"><div class="level-fill" id="levelFill" style="width:0%"></div></div>
+    </div>
+    <div class="stat-pill"><i class="bi bi-fire text-danger"></i> Streak: <span class="stat-num" id="streakNum">0</span></div>
+    <div class="stat-pill"><i class="bi bi-bullseye text-success"></i> Terbaik: <span class="stat-num" id="bestScore">-</span></div>
+  </div>
+
+  <div class="nav-tabs-custom">
+    <button class="nav-btn btn-bangun active" onclick="showSection('bangun')"><i class="bi bi-bounding-box-circles"></i> Bangun Datar</button>
+    <button class="nav-btn btn-sudut" onclick="showSection('sudut')"><i class="bi bi-triangle-half"></i> Jenis Sudut</button>
+    <button class="nav-btn btn-kuis" onclick="showSection('kuis')"><i class="bi bi-controller"></i> Kuis Seru!</button>
+    <button class="nav-btn btn-game" onclick="showSection('game')"><i class="bi bi-joystick"></i> Mini Game!</button>
+    <button class="nav-btn btn-hitung" onclick="showSection('hitung')"><i class="bi bi-lightning-charge-fill"></i> Hitung Cepat!</button>
+  </div>
+
+  <div class="section active" id="sec-bangun">
+    <div class="card-fun">
+      <h2 class="section-title"><i class="bi bi-bounding-box-circles"></i> Bangun Datar — Keliling & Luas</h2>
+      <p style="text-align:center;color:#666;font-size:1rem;margin-bottom:20px;">Klik bangun yang ingin kamu pelajari! <i class="bi bi-hand-index-thumb"></i></p>
+      <div class="shape-grid" id="shapeGrid">
+        <div class="shape-card" style="background:var(--pink-light)" onclick="selectShape('persegi')">
+          <svg class="shape-svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="var(--pink)" rx="4" stroke="#c94f7c" stroke-width="3"/><text x="50" y="55" text-anchor="middle" fill="white" font-size="11" font-family="Nunito" font-weight="700">s × s</text></svg>
+          <div class="shape-name" style="color:var(--pink)">Persegi</div>
+        </div>
+        <div class="shape-card" style="background:var(--blue-light)" onclick="selectShape('persegiPanjang')">
+          <svg class="shape-svg" viewBox="0 0 100 100"><rect x="5" y="25" width="90" height="55" fill="var(--blue)" rx="4" stroke="#2a6acc" stroke-width="3"/><text x="50" y="55" text-anchor="middle" fill="white" font-size="11" font-family="Nunito" font-weight="700">p × l</text></svg>
+          <div class="shape-name" style="color:var(--blue)">Persegi Panjang</div>
+        </div>
+        <div class="shape-card" style="background:var(--green-light)" onclick="selectShape('segitiga')">
+          <svg class="shape-svg" viewBox="0 0 100 100"><polygon points="50,8 95,92 5,92" fill="var(--green)" stroke="#3a8a3a" stroke-width="3"/><text x="50" y="76" text-anchor="middle" fill="white" font-size="11" font-family="Nunito" font-weight="700">½×a×t</text></svg>
+          <div class="shape-name" style="color:var(--green)">Segitiga</div>
+        </div>
+        <div class="shape-card" style="background:var(--yellow-light)" onclick="selectShape('lingkaran')">
+          <svg class="shape-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="var(--yellow)" stroke="#cc9900" stroke-width="3"/><text x="50" y="55" text-anchor="middle" fill="var(--dark)" font-size="11" font-family="Nunito" font-weight="700">π × r²</text></svg>
+          <div class="shape-name" style="color:#b8860b">Lingkaran</div>
+        </div>
+        <div class="shape-card" style="background:var(--orange-light)" onclick="selectShape('jajarGenjang')">
+          <svg class="shape-svg" viewBox="0 0 100 100"><polygon points="20,85 80,85 95,20 35,20" fill="var(--orange)" stroke="#cc6600" stroke-width="3"/><text x="57" y="62" text-anchor="middle" fill="white" font-size="11" font-family="Nunito" font-weight="700">a×t</text></svg>
+          <div class="shape-name" style="color:#cc6600">Jajar Genjang</div>
+        </div>
+        <div class="shape-card" style="background:var(--purple-light)" onclick="selectShape('trapesium')">
+          <svg class="shape-svg" viewBox="0 0 100 100"><polygon points="20,85 80,85 70,20 30,20" fill="var(--purple)" stroke="#6c3483" stroke-width="3"/><text x="50" y="62" text-anchor="middle" fill="white" font-size="10" font-family="Nunito" font-weight="700">½(a+b)t</text></svg>
+          <div class="shape-name" style="color:var(--purple)">Trapesium</div>
+        </div>
+      </div>
+      <div class="formula-section" id="formulaSection">
+        <div id="formulaContent"></div>
+        <div class="calc-section" id="calcSection"></div>
+      </div>
+    </div>
+
+    <div class="card-fun">
+      <h2 class="section-title"><i class="bi bi-arrows-move"></i> Drag & Drop — Cocokkan Rumusnya!</h2>
+      <p style="text-align:center;color:#666;margin-bottom:20px;">Seret kartu rumus ke tempat yang benar! <i class="bi bi-hand-index"></i></p>
+      <div class="rumus-bank" id="rumusBank"></div>
+      <div class="drop-targets" id="dropTargets"></div>
+      <div style="text-align:center;margin-top:20px">
+        <button class="calc-btn" onclick="checkDragDrop()" style="background:var(--purple);margin-right:10px"><i class="bi bi-check-circle"></i> Periksa!</button>
+        <button class="calc-btn" onclick="resetDragDrop()" style="background:var(--orange)"><i class="bi bi-arrow-clockwise"></i> Reset</button>
+      </div>
+      <div id="dragResult" style="margin-top:15px;display:none"></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-sudut">
+    <div class="card-fun">
+      <h2 class="section-title"><i class="bi bi-triangle-half"></i> Macam-Macam Sudut</h2>
+      <div class="nav-inner" id="sudutNav">
+        <button class="nav-inner-btn active" onclick="showSudutTab('pengenalan')"><i class="bi bi-book-half"></i> Pengenalan</button>
+        <button class="nav-inner-btn" onclick="showSudutTab('busur')"><i class="bi bi-bullseye"></i> Ukur Sudut</button>
+        <button class="nav-inner-btn" onclick="showSudutTab('latihan')"><i class="bi bi-pencil-square"></i> Latihan</button>
+      </div>
+
+      <div class="materi-box active" id="tab-pengenalan">
+        <div class="angle-types">
+          <div class="angle-type-card at-lancip" onclick="playAngleSound('lancip');highlightAngle(this,45)">
+            <svg width="100" height="80" viewBox="0 0 100 80">
+              <line x1="50" y1="70" x2="50" y2="10" stroke="#b8860b" stroke-width="3" stroke-linecap="round"/>
+              <line x1="50" y1="70" x2="90" y2="70" stroke="#b8860b" stroke-width="3" stroke-linecap="round"/>
+              <path d="M 50 70 L 68 70 A 18 18 0 0 0 50 52" fill="#FFD93D" opacity="0.5"/>
+              <text x="65" y="62" fill="#8a6000" font-size="11" font-family="Nunito" font-weight="700">45°</text>
+            </svg>
+            <div>Sudut Lancip</div>
+            <div style="font-size:0.85rem;font-weight:400">0° sampai 90°</div>
+            <button class="sound-btn" onclick="event.stopPropagation();playAngleSound('lancip')"><i class="bi bi-volume-up-fill"></i> Dengarkan!</button>
+          </div>
+          <div class="angle-type-card at-siku" onclick="playAngleSound('siku');highlightAngle(this,90)">
+            <svg width="100" height="80" viewBox="0 0 100 80">
+              <line x1="50" y1="70" x2="50" y2="10" stroke="#2d6a2d" stroke-width="3" stroke-linecap="round"/>
+              <line x1="50" y1="70" x2="95" y2="70" stroke="#2d6a2d" stroke-width="3" stroke-linecap="round"/>
+              <rect x="50" y="55" width="15" height="15" fill="none" stroke="#2d6a2d" stroke-width="2"/>
+              <text x="68" y="48" fill="#2d6a2d" font-size="11" font-family="Nunito" font-weight="700">90°</text>
+            </svg>
+            <div>Sudut Siku-Siku</div>
+            <div style="font-size:0.85rem;font-weight:400">Tepat 90°</div>
+            <button class="sound-btn" onclick="event.stopPropagation();playAngleSound('siku')"><i class="bi bi-volume-up-fill"></i> Dengarkan!</button>
+          </div>
+          <div class="angle-type-card at-tumpul" onclick="playAngleSound('tumpul');highlightAngle(this,130)">
+            <svg width="100" height="80" viewBox="0 0 100 80">
+              <line x1="50" y1="70" x2="15" y2="15" stroke="#1a4a8a" stroke-width="3" stroke-linecap="round"/>
+              <line x1="50" y1="70" x2="95" y2="70" stroke="#1a4a8a" stroke-width="3" stroke-linecap="round"/>
+              <path d="M 50 70 L 70 70 A 20 20 0 0 0 31.7 47.7" fill="#4D96FF" opacity="0.3"/>
+              <text x="58" y="56" fill="#1a4a8a" font-size="11" font-family="Nunito" font-weight="700">130°</text>
+            </svg>
+            <div>Sudut Tumpul</div>
+            <div style="font-size:0.85rem;font-weight:400">90° sampai 180°</div>
+            <button class="sound-btn" onclick="event.stopPropagation();playAngleSound('tumpul')"><i class="bi bi-volume-up-fill"></i> Dengarkan!</button>
+          </div>
+          <div class="angle-type-card at-lurus" onclick="playAngleSound('lurus');highlightAngle(this,180)">
+            <svg width="100" height="80" viewBox="0 0 100 80">
+              <line x1="5" y1="55" x2="95" y2="55" stroke="#8a3a00" stroke-width="3" stroke-linecap="round"/>
+              <line x1="50" y1="55" x2="50" y2="55"/>
+              <path d="M 50 55 L 70 55 A 20 20 0 0 0 30 55" fill="#FF9A3C" opacity="0.3"/>
+              <text x="50" y="38" fill="#8a3a00" font-size="11" font-family="Nunito" font-weight="700" text-anchor="middle">180°</text>
+            </svg>
+            <div>Sudut Lurus</div>
+            <div style="font-size:0.85rem;font-weight:400">Tepat 180°</div>
+            <button class="sound-btn" onclick="event.stopPropagation();playAngleSound('lurus')"><i class="bi bi-volume-up-fill"></i> Dengarkan!</button>
+          </div>
+          <div class="angle-type-card at-reflex" onclick="playAngleSound('reflex');highlightAngle(this,270)">
+            <svg width="100" height="80" viewBox="0 0 100 80">
+              <line x1="50" y1="55" x2="50" y2="10" stroke="#8a0050" stroke-width="3" stroke-linecap="round"/>
+              <line x1="50" y1="55" x2="95" y2="55" stroke="#8a0050" stroke-width="3" stroke-linecap="round"/>
+              <path d="M 50 55 L 70 55 A 20 20 0 1 1 50 35" fill="#FF6B9D" opacity="0.25"/>
+              <text x="20" y="72" fill="#8a0050" font-size="11" font-family="Nunito" font-weight="700">270°</text>
+            </svg>
+            <div>Sudut Refleks</div>
+            <div style="font-size:0.85rem;font-weight:400">180° sampai 360°</div>
+            <button class="sound-btn" onclick="event.stopPropagation();playAngleSound('reflex')"><i class="bi bi-volume-up-fill"></i> Dengarkan!</button>
+          </div>
+        </div>
+        <div id="angleHighlightInfo" style="margin-top:20px;display:none;text-align:center;animation:fadeIn .4s">
+          <div style="background:var(--yellow-light);border-radius:16px;padding:15px;display:inline-block">
+            <div id="angleInfoText" style="font-size:1.1rem;font-weight:700;color:var(--dark)"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="materi-box" id="tab-busur">
+        <div style="text-align:center;margin-bottom:20px">
+          <p style="color:#555;font-size:1.05rem;font-weight:600"><i class="bi bi-sliders"></i> Geser slider untuk mengubah besar sudut!</p>
+        </div>
+        <div style="display:flex;justify-content:center;margin-bottom:20px">
+          <div style="position:relative;width:320px;height:200px">
+            <canvas id="protractorCanvas" width="320" height="200"></canvas>
+          </div>
+        </div>
+        <div class="angle-display" id="angleDegDisplay">90°</div>
+        <div class="angle-label" id="angleTypeDisplay">Sudut Siku-Siku <i class="bi bi-check-circle-fill text-success"></i></div>
+        <div class="slider-section" style="padding:0 20px;margin-top:20px">
+          <input type="range" class="angle-slider" id="angleSlider" min="1" max="359" value="90" oninput="updateAngle(this.value)">
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:0 20px;color:#888;font-size:0.85rem;font-weight:600">
+          <span>0°</span><span>90°</span><span>180°</span><span>270°</span><span>360°</span>
+        </div>
+        <div style="text-align:center;margin-top:20px">
+          <button class="sound-btn" onclick="readAngle()"><i class="bi bi-volume-up-fill"></i> Baca Sudutnya!</button>
+          <button class="sound-btn" style="background:var(--pink);margin-left:10px" onclick="randomAngle()"><i class="bi bi-dice-5-fill"></i> Acak!</button>
+        </div>
+      </div>
+
+      <div class="materi-box" id="tab-latihan">
+        <div id="latihanContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-kuis">
+    <div class="card-fun">
+      <h2 class="section-title"><i class="bi bi-controller"></i> Kuis Super Seru!</h2>
+      <div id="quizContainer">
+        <div class="quiz-card" id="quizCard">
+          <div class="progress-bar"><div class="progress-fill" id="quizProgress" style="width:0%"></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+            <span style="font-family:'Fredoka One',cursive;font-size:1rem">Soal <span id="qNum">1</span>/10</span>
+            <svg class="timer-ring" viewBox="0 0 70 70" id="timerSvg">
+              <circle class="timer-track" cx="35" cy="35" r="30"/>
+              <circle class="timer-fill" id="timerCircle" cx="35" cy="35" r="30" stroke-dasharray="188" stroke-dashoffset="0"/>
+              <text class="timer-text" x="35" y="41" text-anchor="middle" font-family="'Fredoka One',cursive" font-size="18" fill="white" id="timerText">15</text>
+            </svg>
+            <span style="font-family:'Fredoka One',cursive;font-size:1rem"><i class="bi bi-star-fill text-warning"></i> <span id="qScore">0</span></span>
+          </div>
+          <div id="streakShow" style="margin-bottom:10px;min-height:30px;text-align:center"></div>
+          <div class="quiz-q" id="quizQuestion">Memuat soal...</div>
+          <div id="quizShape" style="margin:15px 0"></div>
+          <div class="quiz-options" id="quizOptions"></div>
+        </div>
+        <div class="congrats" id="congratsScreen">
+          <div class="congrats-emoji"><i class="bi bi-balloon-fill text-danger"></i></div>
+          <div class="congrats-title">Hebat Sekali!</div>
+          <div style="font-size:1.3rem;color:#555;margin:10px 0">Nilaimu: <strong id="finalScore" style="color:var(--purple);font-size:1.8rem"></strong></div>
+          <div id="scoreMsg" style="font-size:1.1rem;color:#888;margin-bottom:20px"></div>
+          <div id="quizStarsEarned" style="font-size:2rem;margin:10px 0;color:var(--yellow);"></div>
+          <button class="calc-btn" onclick="restartQuiz()" style="background:var(--purple);font-size:1.2rem"><i class="bi bi-arrow-repeat"></i> Main Lagi!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-game">
+    <div class="card-fun">
+      <h2 class="section-title"><i class="bi bi-joystick"></i> Pilih Mini Game!</h2>
+      <div class="game-grid">
+        <div class="game-card" style="background:linear-gradient(135deg,#FFD93D,#FF9A3C);color:var(--dark)" onclick="startGame('shadow')">
+          <div class="game-icon"><i class="bi bi-eye-fill text-dark"></i></div>
+          <div class="game-title">Tebak Bayangannya!</div>
+          <div class="game-desc">Tebak nama bangun datar dari bayangannya!</div>
+          <div class="game-badge"><i class="bi bi-star-fill"></i> Mudah</div>
+        </div>
+        <div class="game-card" style="background:linear-gradient(135deg,#4D96FF,#764ba2);color:#fff" onclick="startGame('memory')">
+          <div class="game-icon"><i class="bi bi-suit-spade-fill text-white"></i></div>
+          <div class="game-title">Kartu Ingatan!</div>
+          <div class="game-desc">Temukan pasangan rumus matematika!</div>
+          <div class="game-badge"><i class="bi bi-fire"></i> Sedang</div>
+        </div>
+        <div class="game-card" style="background:linear-gradient(135deg,#6BCB77,#00C9A7);color:#fff" onclick="startGame('whack')">
+          <div class="game-icon"><i class="bi bi-hammer text-white"></i></div>
+          <div class="game-title">Pukul Angkanya!</div>
+          <div class="game-desc">Pukul kotak jawaban yang benar secepat mungkin!</div>
+          <div class="game-badge"><i class="bi bi-lightning-charge-fill"></i> Cepat</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-fun" id="gameArea" style="display:none">
+      <div id="gameContent"></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-hitung">
+    <div class="card-fun">
+      <h2 class="section-title"><i class="bi bi-lightning-charge-fill"></i> Hitung Cepat — Speed Math!</h2>
+      <div id="speedGameArea">
+        <div style="text-align:center;padding:20px">
+          <div style="font-size:1.1rem;color:#555;font-weight:700;margin-bottom:20px">Pilih level tantanganmu! <i class="bi bi-emoji-smile-fill text-warning"></i></div>
+          <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap">
+            <button class="calc-btn" onclick="startSpeedGame('mudah')" style="background:var(--green);font-size:1.2rem;padding:15px 30px"><i class="bi bi-tree-fill"></i> Mudah<br><small style="font-size:0.8rem">+ dan −</small></button>
+            <button class="calc-btn" onclick="startSpeedGame('sedang')" style="background:var(--orange);font-size:1.2rem;padding:15px 30px"><i class="bi bi-fire"></i> Sedang<br><small style="font-size:0.8rem">× dan ÷</small></button>
+            <button class="calc-btn" onclick="startSpeedGame('sulit')" style="background:var(--red);font-size:1.2rem;padding:15px 30px"><i class="bi bi-explosion"></i> Sulit<br><small style="font-size:0.8rem">Campuran!</small></button>
+          </div>
+          <div id="speedHighScore" style="margin-top:20px;font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--purple)"></div>
+        </div>
+      </div>
+      <div id="speedGamePlay" style="display:none">
+        <div class="speed-game">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px">
+            <div style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--dark)"><i class="bi bi-question-circle-fill"></i> Soal: <span id="speedQNum" style="color:var(--purple)">0</span>/15</div>
+            <div style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--dark)"><i class="bi bi-star-fill text-warning"></i> Skor: <span id="speedScore" style="color:var(--orange)">0</span></div>
+            <div class="combo-text"><i class="bi bi-fire text-danger"></i> Combo: <span id="comboCount">0</span>x</div>
+          </div>
+          <div class="speed-timer-bar"><div class="speed-timer-fill" id="speedTimerBar" style="width:100%;background:var(--green)"></div></div>
+          <div class="speed-question" id="speedQuestion">3 + 4 = ?</div>
+          <div style="display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap">
+            <input type="number" class="speed-input" id="speedInput" placeholder="?" oninput="checkSpeedAnswer()" autofocus>
+          </div>
+          <div id="speedFeedback" style="height:40px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1.3rem;margin-top:10px"></div>
+          <div style="text-align:center;margin-top:15px">
+            <button class="calc-btn" onclick="stopSpeedGame()" style="background:var(--red)"><i class="bi bi-stop-circle-fill"></i> Berhenti</button>
+          </div>
+        </div>
+      </div>
+      <div id="speedGameResult" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:4rem; color:var(--yellow);" id="speedResultEmoji"><i class="bi bi-trophy-fill"></i></div>
+        <div style="font-family:'Fredoka One',cursive;font-size:2rem;color:var(--purple);margin:15px 0" id="speedResultTitle">Selesai!</div>
+        <div style="font-size:1.3rem;font-weight:700;color:var(--dark)" id="speedResultStats"></div>
+        <div style="font-size:1.5rem;margin:15px 0" id="speedResultRecord"></div>
+        <button class="calc-btn" onclick="showSpeedMenu()" style="background:var(--purple);margin-top:15px;font-size:1.2rem"><i class="bi bi-arrow-repeat"></i> Main Lagi!</button>
+      </div>
+    </div>
+  </div>
+
+</div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ============================================================
+// STARS
+// ============================================================
+function createStars(){
+  for(let i=0;i<25;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*10+4;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;top:${Math.random()*100}vh;background:${['#FFD93D','#FF6B9D','#4D96FF','#6BCB77','#FF9A3C'][Math.floor(Math.random()*5)]};animation-delay:${Math.random()*2}s;animation-duration:${1.5+Math.random()*2}s`;
+    document.body.appendChild(s);
+  }
+}
+createStars();
+
+// ============================================================
+// SPEECH
+// ============================================================
+const synth=window.speechSynthesis;
+function speak(text,pitch=1,rate=0.9){
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='id-ID';u.pitch=pitch;u.rate=rate;u.volume=1;
+  setTimeout(()=>synth.speak(u),100);
+}
+
+// ============================================================
+// GAME STATE (Bintang, Level, Streak) -> Local Storage Integrated
+// ============================================================
+let defaultState = {stars:0,level:1,xp:0,streak:0,bestQuizScore:'-',highScores:{}};
+let gameState;
+
+try {
+  gameState = JSON.parse(localStorage.getItem('matkuState')) || defaultState;
+} catch(e) {
+  gameState = defaultState;
+}
+
+const speedHighScores = gameState.highScores && gameState.highScores.mudah !== undefined ? gameState.highScores : {mudah:0,sedang:0,sulit:0};
+
+function saveState() {
+  gameState.highScores = speedHighScores;
+  localStorage.setItem('matkuState', JSON.stringify(gameState));
+}
+
+function addStars(n){
+  gameState.stars+=n;
+  gameState.xp+=n*10;
+  const xpNeeded=gameState.level*100;
+  if(gameState.xp>=xpNeeded){gameState.level++;gameState.xp-=xpNeeded;showReward('levelUp');}
+  updateStats();
+  saveState();
+  animateStarAdd(n);
+}
+
+function updateStats(){
+  document.getElementById('totalStars').textContent=gameState.stars;
+  document.getElementById('levelNum').textContent=gameState.level;
+  document.getElementById('streakNum').textContent=gameState.streak;
+  document.getElementById('bestScore').textContent=gameState.bestQuizScore;
+  const pct=Math.min((gameState.xp/(gameState.level*100))*100,100);
+  document.getElementById('levelFill').style.width=pct+'%';
+}
+
+function animateStarAdd(n){
+  const el=document.createElement('div');
+  el.style.cssText=`position:fixed;top:80px;right:30px;font-family:'Fredoka One',cursive;font-size:1.5rem;color:#FFD93D;text-shadow:2px 2px 0 rgba(0,0,0,0.4);z-index:9990;animation:particleFly 1.5s forwards;pointer-events:none`;
+  el.innerHTML=`+${n} <i class="bi bi-star-fill"></i>`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1600);
+}
+
+function addStreak(){gameState.streak++;updateStats();saveState();}
+function resetStreak(){gameState.streak=0;updateStats();saveState();}
+
+// ============================================================
+// MASCOT
+// ============================================================
+const mascotMsgs={
+  bangun:['Yuk belajar rumus bangun datar! Klik salah satu!','Persegi, lingkaran, segitiga... semuanya seru!','Kalau udah ngerti rumusnya, cobain kalkulatornya!'],
+  sudut:['Sudut itu banyak jenisnya lho! Ada yang lancip, tumpul...','Slider busur derajat bisa kamu geser-geser!','Cobain latihan soal sudut ya, Olly yakin kamu bisa!'],
+  kuis:['Wah, mau kuis? Siap-siap ya! Jangan lupa waktu 15 detik!','Semakin cepat jawab, semakin keren! Ayo semangat!','Kalau streak 3 berturut-turut, dapat bonus bintang!'],
+  game:['Wah ada game! Olly suka yang Tebak Bayangan!','Kartu Ingatan bisa melatih ingatanmu!','Ayo cobain semuanya! Kamu pasti bisa!'],
+  hitung:['Hitung cepat itu seru! Coba level sulit kalau berani!','Latihan hitung cepat bikin otak makin jago!','Combo tinggi = bintang lebih banyak!'],
+  benar:['Benar! Kamu memang pintar!','Yesss! Mantap sekali!','WOW! Tepat banget! Luar biasa!','Olly bangga sama kamu! Terus semangat!'],
+  salah:['Hmm, belum tepat. Coba lagi ya!','Jangan menyerah! Olly percaya kamu bisa!','Salah itu wajar, yang penting mau mencoba lagi!']
+};
+
+const mascotEmojis={
+  benar:['<i class="bi bi-emoji-sunglasses"></i>','<i class="bi bi-emoji-laughing"></i>','<i class="bi bi-emoji-heart-eyes"></i>','<i class="bi bi-emoji-smile"></i>'],
+  salah:['<i class="bi bi-emoji-sweat"></i>','<i class="bi bi-emoji-frown"></i>','<i class="bi bi-emoji-tear"></i>','<i class="bi bi-emoji-expressionless"></i>'],
+  default:'<i class="bi bi-robot"></i>'
+};
+
+function setMascot(context,state=''){
+  const msgs=mascotMsgs[state]||mascotMsgs[context]||mascotMsgs['bangun'];
+  const msg=msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('mascotText').textContent=msg;
+  if(state==='benar'){document.getElementById('mascotFace').innerHTML=mascotEmojis.benar[Math.floor(Math.random()*4)];
+    setTimeout(()=>document.getElementById('mascotFace').innerHTML=mascotEmojis.default,2000);}
+  else if(state==='salah'){document.getElementById('mascotFace').innerHTML=mascotEmojis.salah[Math.floor(Math.random()*4)];
+    setTimeout(()=>document.getElementById('mascotFace').innerHTML=mascotEmojis.default,2000);}
+}
+
+// ============================================================
+// REWARD POPUP
+// ============================================================
+function showReward(type,score=0){
+  const configs={
+    levelUp:{emoji:'<i class="bi bi-balloon-fill text-danger"></i>',title:'NAIK LEVEL!',stars:'<i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>',msg:`Selamat! Kamu sekarang Level ${gameState.level}! Terus semangat belajar!`},
+    perfect:{emoji:'<i class="bi bi-trophy-fill text-warning"></i>',title:'SEMPURNA!',stars:'<i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>',msg:'Semua jawaban benar! Kamu luar biasa!'},
+    good:{emoji:'<i class="bi bi-emoji-smile-fill text-success"></i>',title:'BAGUS SEKALI!',stars:'<i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>',msg:`Skor ${score}/10. Terus tingkatkan ya!`},
+    ok:{emoji:'<i class="bi bi-emoji-sunglasses-fill text-primary"></i>',title:'KERJA KERAS!',stars:'<i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>',msg:'Latihan lagi pasti bisa lebih baik!'},
+  };
+  const c=configs[type]||configs.good;
+  document.getElementById('rewardEmoji').innerHTML=c.emoji;
+  document.getElementById('rewardTitle').textContent=c.title;
+  document.getElementById('rewardStars').innerHTML=c.stars;
+  document.getElementById('rewardMsg').textContent=c.msg;
+  document.getElementById('rewardPopup').classList.add('show');
+  document.getElementById('rewardOverlay').classList.add('show');
+  celebrate();
+  speak(c.title+'. '+c.msg,1.2,0.85);
+}
+
+function closeReward(){
+  document.getElementById('rewardPopup').classList.remove('show');
+  document.getElementById('rewardOverlay').classList.remove('show');
+}
+
+// ============================================================
+// SECTION NAV
+// ============================================================
+function showSection(name){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  const map={bangun:'btn-bangun',sudut:'btn-sudut',kuis:'btn-kuis',game:'btn-game',hitung:'btn-hitung'};
+  document.querySelector('.'+map[name]).classList.add('active');
+  setMascot(name);
+  if(name==='kuis') initQuiz();
+  if(name==='sudut') setTimeout(()=>drawProtractor(90),100);
+  const msgs={bangun:'Mari belajar bangun datar! Keliling dan luas itu seru!',
+    sudut:'Yuk mengenal macam macam sudut!',kuis:'Saatnya kuis dengan timer! Siap siap ya!',
+    game:'Wah ada mini game! Pilih game yang kamu mau!',hitung:'Hitung cepat! Latih otakmu!'};
+  speak(msgs[name]||'',1.1,0.85);
+}
+
+// ============================================================
+// SHAPE DATA
+// ============================================================
+const shapes={
+  persegi:{name:'Persegi',color:'var(--pink)',icon:'<rect x="15" y="15" width="70" height="70" fill="var(--pink)" rx="4" stroke="#c94f7c" stroke-width="3"/>',
+    keliling:{formula:'K = 4 × s',hint:'Tambahkan semua 4 sisi yang sama!'},
+    luas:{formula:'L = s × s',hint:'Kalikan sisi dengan sisi!'},
+    inputs:[{id:'s',label:'Panjang Sisi (s)',unit:'cm'}],calc:(v)=>({k:4*v.s,l:v.s*v.s})},
+  persegiPanjang:{name:'Persegi Panjang',color:'var(--blue)',icon:'<rect x="5" y="25" width="90" height="50" fill="var(--blue)" rx="4" stroke="#2a6acc" stroke-width="3"/>',
+    keliling:{formula:'K = 2 × (p + l)',hint:'Jumlahkan panjang dan lebar, lalu kali 2!'},
+    luas:{formula:'L = p × l',hint:'Panjang dikali lebar!'},
+    inputs:[{id:'p',label:'Panjang (p)',unit:'cm'},{id:'l',label:'Lebar (l)',unit:'cm'}],calc:(v)=>({k:2*(v.p+v.l),l:v.p*v.l})},
+  segitiga:{name:'Segitiga',color:'var(--green)',icon:'<polygon points="50,8 95,92 5,92" fill="var(--green)" stroke="#3a8a3a" stroke-width="3"/>',
+    keliling:{formula:'K = a + b + c',hint:'Jumlahkan ketiga sisinya!'},
+    luas:{formula:'L = ½ × alas × tinggi',hint:'Setengah dari alas dikali tinggi!'},
+    inputs:[{id:'a',label:'Alas (a)',unit:'cm'},{id:'t',label:'Tinggi (t)',unit:'cm'},{id:'sa',label:'Sisi a',unit:'cm'},{id:'sb',label:'Sisi b',unit:'cm'},{id:'sc',label:'Sisi c',unit:'cm'}],
+    calc:(v)=>({k:v.sa+v.sb+v.sc,l:0.5*v.a*v.t})},
+  lingkaran:{name:'Lingkaran',color:'var(--yellow)',icon:'<circle cx="50" cy="50" r="42" fill="var(--yellow)" stroke="#cc9900" stroke-width="3"/>',
+    keliling:{formula:'K = 2 × π × r',hint:'Gunakan π = 3.14!'},
+    luas:{formula:'L = π × r²',hint:'Pi kali jari-jari dikuadratkan!'},
+    inputs:[{id:'r',label:'Jari-jari (r)',unit:'cm'}],calc:(v)=>({k:2*3.14*v.r,l:3.14*v.r*v.r})},
+  jajarGenjang:{name:'Jajar Genjang',color:'var(--orange)',icon:'<polygon points="20,85 80,85 95,20 35,20" fill="var(--orange)" stroke="#cc6600" stroke-width="3"/>',
+    keliling:{formula:'K = 2 × (a + b)',hint:'Jumlahkan kedua sisi berbeda, kali 2!'},
+    luas:{formula:'L = alas × tinggi',hint:'Alas dikali tinggi tegaknya!'},
+    inputs:[{id:'a',label:'Alas (a)',unit:'cm'},{id:'t',label:'Tinggi (t)',unit:'cm'},{id:'b',label:'Sisi miring (b)',unit:'cm'}],
+    calc:(v)=>({k:2*(v.a+v.b),l:v.a*v.t})},
+  trapesium:{name:'Trapesium',color:'var(--purple)',icon:'<polygon points="20,85 80,85 70,20 30,20" fill="var(--purple)" stroke="#6c3483" stroke-width="3"/>',
+    keliling:{formula:'K = a + b + c + d',hint:'Jumlahkan keempat sisinya!'},
+    luas:{formula:'L = ½ × (a + b) × t',hint:'Setengah jumlah dua sisi sejajar dikali tinggi!'},
+    inputs:[{id:'a',label:'Sisi Atas (a)',unit:'cm'},{id:'b',label:'Sisi Bawah (b)',unit:'cm'},{id:'t',label:'Tinggi (t)',unit:'cm'},{id:'c',label:'Sisi Kiri (c)',unit:'cm'},{id:'d',label:'Sisi Kanan (d)',unit:'cm'}],
+    calc:(v)=>({k:v.a+v.b+v.c+v.d,l:0.5*(v.a+v.b)*v.t})}
+};
+
+let selectedShape=null;
+function selectShape(key){
+  selectedShape=key;
+  document.querySelectorAll('.shape-card').forEach(c=>c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  const sh=shapes[key];
+  const fs=document.getElementById('formulaSection');
+  const fc=document.getElementById('formulaContent');
+  const cs=document.getElementById('calcSection');
+  fs.classList.add('show');
+  fc.innerHTML=`
+    <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap">
+      <svg width="100" height="100" viewBox="0 0 100 100" style="flex-shrink:0">${sh.icon}</svg>
+      <div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.6rem;color:${sh.color}">${sh.name}</div>
+        <button class="sound-btn" onclick="speakShapeFormula('${key}')"><i class="bi bi-volume-up-fill"></i> Dengarkan Rumus!</button>
+      </div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title"><i class="bi bi-rulers"></i> Keliling</div>
+      <div class="formula-text">${sh.keliling.formula}</div>
+      <div style="font-size:0.9rem;color:var(--dark);margin-top:8px"><i class="bi bi-lightbulb-fill text-dark"></i> ${sh.keliling.hint}</div>
+    </div>
+    <div class="formula-box" style="background:linear-gradient(135deg,var(--green-light),var(--teal));color:var(--dark)">
+      <div class="formula-title"><i class="bi bi-bounding-box-circles"></i> Luas</div>
+      <div class="formula-text">${sh.luas.formula}</div>
+      <div style="font-size:0.9rem;color:var(--dark);margin-top:8px"><i class="bi bi-lightbulb-fill text-dark"></i> ${sh.luas.hint}</div>
+    </div>`;
+  let inputsHTML=`<div class="calc-title"><i class="bi bi-calculator-fill"></i> Coba Hitung Sendiri!</div><div class="input-row" style="flex-wrap:wrap">`;
+  sh.inputs.forEach(inp=>{inputsHTML+=`<div><div class="calc-label">${inp.label}</div><input class="calc-input" type="number" id="inp_${inp.id}" min="0" placeholder="0" style="border-color:${sh.color}"></div>`;});
+  inputsHTML+=`</div><button class="calc-btn" onclick="calculate('${key}')" style="background:${sh.color}"><i class="bi bi-check-circle-fill"></i> Hitung!</button><div class="result-box" id="resultBox" style="margin-top:15px">...</div>`;
+  cs.innerHTML=inputsHTML;
+  speak(`${sh.name}! Rumus keliling: ${sh.keliling.formula.replace(/×/g,'kali').replace(/\+/g,'plus')}. Rumus luas: ${sh.luas.formula.replace(/×/g,'kali').replace(/½/g,'setengah')}`,1,0.85);
+  addStars(1);
+  setMascot('bangun');
+}
+
+function speakShapeFormula(key){
+  const sh=shapes[key];
+  speak(`Untuk ${sh.name}, rumus keliling adalah ${sh.keliling.formula.replace(/×/g,'kali').replace(/\+/g,'tambah')}. Dan rumus luas adalah ${sh.luas.formula.replace(/×/g,'kali').replace(/½/g,'setengah')}`,1,0.85);
+}
+function getInputVals(key){const sh=shapes[key];const v={};sh.inputs.forEach(inp=>{v[inp.id]=parseFloat(document.getElementById('inp_'+inp.id)?.value)||0});return v;}
+function calculate(key){
+  const sh=shapes[key];const v=getInputVals(key);
+  const allFilled=sh.inputs.every(i=>v[i.id]>0);
+  const rb=document.getElementById('resultBox');
+  if(!allFilled){rb.innerHTML='<i class="bi bi-exclamation-triangle-fill text-warning"></i> Isi semua angka dulu ya!';rb.classList.add('show');rb.style.borderColor='var(--orange)';speak('Isi semua angka dulu ya!',1.2,0.9);return;}
+  const res=sh.calc(v);
+  rb.style.borderColor='var(--green)';
+  rb.innerHTML=`<div style="font-size:1.5rem"><i class="bi bi-rulers text-blue"></i> Keliling = <strong style="color:var(--blue)">${res.k.toFixed(2)} cm</strong></div><div style="font-size:1.5rem;margin-top:8px"><i class="bi bi-bounding-box-circles text-success"></i> Luas = <strong style="color:var(--green)">${res.l.toFixed(2)} cm²</strong></div>`;
+  rb.classList.add('show');
+  speak(`Keliling ${sh.name} adalah ${res.k.toFixed(1)} sentimeter. Luasnya adalah ${res.l.toFixed(1)} sentimeter persegi!`,1,0.85);
+  celebrate();addStars(2);
+}
+
+// ============================================================
+// DRAG & DROP
+// ============================================================
+const ddData=[
+  {shape:'Persegi',keliling:'K = 4 × s',luas:'L = s × s'},
+  {shape:'Lingkaran',keliling:'K = 2πr',luas:'L = πr²'},
+  {shape:'Segitiga',keliling:'K = a+b+c',luas:'L = ½×a×t'},
+  {shape:'Persegi Panjang',keliling:'K = 2(p+l)',luas:'L = p × l'},
+];
+let ddAnswers={},draggedItem=null;
+
+function initDragDrop(){
+  const bank=document.getElementById('rumusBank');const targets=document.getElementById('dropTargets');
+  if(!bank)return;bank.innerHTML='';targets.innerHTML='';ddAnswers={};
+  const allFormulas=[];
+  ddData.forEach(d=>{allFormulas.push({text:d.keliling,type:'keliling',shape:d.shape},{text:d.luas,type:'luas',shape:d.shape})});
+  allFormulas.sort(()=>Math.random()-0.5);
+  const colors=['var(--pink)','var(--blue)','var(--green)','var(--orange)','var(--purple)','var(--yellow)'];
+  allFormulas.forEach((f,i)=>{
+    const el=document.createElement('div');el.className='drag-item';
+    el.style.background=colors[i%colors.length];
+    el.style.color=colors[i%colors.length]==='var(--yellow)'?'var(--dark)':'white';
+    el.textContent=f.text;el.draggable=true;el.dataset.formula=f.text;el.dataset.type=f.type;el.dataset.shape=f.shape;
+    el.addEventListener('dragstart',e=>{draggedItem=el;el.style.opacity='0.5';});
+    el.addEventListener('dragend',()=>{el.style.opacity='1';draggedItem=null;});
+    bank.appendChild(el);
+  });
+  ddData.forEach(d=>{
+    const col=document.createElement('div');
+    col.innerHTML=`<div style="background:var(--blue-light);border-radius:16px;padding:15px;margin-bottom:15px">
+      <div class="drop-label" style="color:var(--blue)"><i class="bi bi-box-seam"></i> ${d.shape}</div>
+      <div style="font-size:0.85rem;font-weight:600;color:#888;margin-bottom:5px">Keliling:</div>
+      <div class="drop-area" id="drop_k_${d.shape.replace(/ /g,'_')}" data-expect="${d.keliling}"><span style="color:#ccc;font-size:0.9rem">Seret ke sini</span></div>
+      <div style="font-size:0.85rem;font-weight:600;color:#888;margin:8px 0 5px">Luas:</div>
+      <div class="drop-area" id="drop_l_${d.shape.replace(/ /g,'_')}" data-expect="${d.luas}"><span style="color:#ccc;font-size:0.9rem">Seret ke sini</span></div>
+    </div>`;
+    targets.appendChild(col);
+  });
+  document.querySelectorAll('.drop-area').forEach(area=>{
+    area.addEventListener('dragover',e=>{e.preventDefault();area.classList.add('dragover');});
+    area.addEventListener('dragleave',()=>area.classList.remove('dragover'));
+    area.addEventListener('drop',e=>{
+      e.preventDefault();area.classList.remove('dragover');if(!draggedItem)return;
+      area.innerHTML='';const clone=draggedItem.cloneNode(true);clone.draggable=false;clone.style.opacity='1';
+      area.appendChild(clone);ddAnswers[area.id]={placed:draggedItem.dataset.formula,expected:area.dataset.expect};
+      draggedItem.style.opacity='0.4';draggedItem.draggable=false;speak('Bagus!',1.1,0.9);
+    });
+  });
+}
+
+function checkDragDrop(){
+  let correct=0,total=Object.keys(ddAnswers).length;
+  Object.entries(ddAnswers).forEach(([id,{placed,expected}])=>{
+    const el=document.getElementById(id);
+    if(placed===expected){correct++;el.style.background='var(--green-light)';el.style.borderColor='var(--green)';}
+    else{el.style.background='#FFE0E0';el.style.borderColor='var(--red)';}
+  });
+  const dr=document.getElementById('dragResult');dr.style.display='block';
+  if(correct===8){dr.innerHTML=`<div style="background:var(--green-light);border-radius:16px;padding:20px;text-align:center"><div style="font-size:2rem;color:var(--green)"><i class="bi bi-star-fill"></i></div><div style="font-family:'Fredoka One',cursive;font-size:1.5rem;color:var(--green)">Sempurna! Semua benar!</div></div>`;
+    speak('Luar biasa! Semua jawaban benar!',1.2,0.85);celebrate();addStars(5);}
+  else{dr.innerHTML=`<div style="background:var(--orange-light);border-radius:16px;padding:20px;text-align:center"><div style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--orange)">${correct} dari 8 benar! Coba lagi! <i class="bi bi-emoji-smile"></i></div></div>`;
+    speak(`Kamu benar ${correct} dari delapan.`,1,0.85);}
+}
+function resetDragDrop(){speak('Ayo mulai lagi!',1.1,0.9);initDragDrop();document.getElementById('dragResult').style.display='none';}
+
+// ============================================================
+// SUDUT
+// ============================================================
+function showSudutTab(tab){
+  document.querySelectorAll('.materi-box').forEach(m=>m.classList.remove('active'));
+  document.querySelectorAll('.nav-inner-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  const btns=document.querySelectorAll('.nav-inner-btn');
+  const idx={pengenalan:0,busur:1,latihan:2}[tab];btns[idx].classList.add('active');
+  if(tab==='busur')setTimeout(()=>drawProtractor(parseInt(document.getElementById('angleSlider').value)),100);
+  if(tab==='latihan')initLatihan();
+}
+
+function playAngleSound(type){
+  const msgs={lancip:'Sudut lancip! Besarnya antara nol sampai sembilan puluh derajat. Seperti ujung pensil!',
+    siku:'Sudut siku siku! Tepat sembilan puluh derajat. Seperti sudut buku!',
+    tumpul:'Sudut tumpul! Besarnya antara sembilan puluh sampai seratus delapan puluh derajat!',
+    lurus:'Sudut lurus! Tepat seratus delapan puluh derajat!',
+    reflex:'Sudut refleks! Besarnya antara seratus delapan puluh sampai tiga ratus enam puluh derajat!'};
+  speak(msgs[type],1.1,0.85);
+}
+
+function highlightAngle(card,deg){
+  const info=document.getElementById('angleHighlightInfo');const text=document.getElementById('angleInfoText');
+  const types={45:'Sudut Lancip: Runcing seperti ujung pensil! 0° - 90°',90:'Sudut Siku-Siku: Pas 90°! Seperti sudut buku!',130:'Sudut Tumpul: Terbuka lebar! 90° - 180°',180:'Sudut Lurus: Membentuk garis lurus! Tepat 180°',270:'Sudut Refleks: Lebih dari setengah lingkaran! 180° - 360°'};
+  text.textContent=types[deg]||`Sudut ${deg}°`;info.style.display='block';
+}
+
+let currentAngle=90;
+function drawProtractor(deg){
+  currentAngle=deg;const canvas=document.getElementById('protractorCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const cx=160,cy=185,r=150;
+  ctx.clearRect(0,0,320,200);ctx.save();
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,2*Math.PI);ctx.closePath();
+  ctx.fillStyle='#FFFDE7';ctx.fill();ctx.strokeStyle='#FFC107';ctx.lineWidth=3;ctx.stroke();
+  for(let a=0;a<=180;a+=10){
+    const rad=(180-a)*Math.PI/180;const inner=a%90===0?r-30:a%10===0?r-15:r-8;
+    const x1=cx+Math.cos(rad)*inner,y1=cy-Math.sin(rad)*inner;const x2=cx+Math.cos(rad)*r,y2=cy-Math.sin(rad)*r;
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=a%30===0?'#333':'#999';ctx.lineWidth=a%10===0?1.5:0.8;ctx.stroke();
+    if(a%30===0){const tx=cx+Math.cos(rad)*(r-38),ty=cy-Math.sin(rad)*(r-38);ctx.font='bold 11px Nunito';ctx.fillStyle='#555';ctx.textAlign='center';ctx.fillText(a+'°',tx,ty+4);}
+  }
+  ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.lineTo(cx+r,cy);ctx.strokeStyle='#333';ctx.lineWidth=2.5;ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,6,0,2*Math.PI);ctx.fillStyle='#333';ctx.fill();
+  const rad=(180-deg)*Math.PI/180;const ex=cx+Math.cos(rad)*(r-10),ey=cy-Math.sin(rad)*(r-10);
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);ctx.strokeStyle='#FF4757';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+  ctx.beginPath();ctx.arc(ex,ey,6,0,2*Math.PI);ctx.fillStyle='#FF4757';ctx.fill();
+  if(deg<=180){ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,40,Math.PI,(180-deg)*Math.PI/180,true);ctx.fillStyle='rgba(255,71,87,0.15)';ctx.fill();}
+}
+
+function updateAngle(val){
+  currentAngle=parseInt(val);drawProtractor(currentAngle);
+  document.getElementById('angleDegDisplay').textContent=currentAngle+'°';
+  const label=document.getElementById('angleTypeDisplay');
+  let type='';
+  if(currentAngle<90){type='Sudut Lancip <i class="bi bi-triangle-fill text-warning"></i>'}else if(currentAngle===90){type='Sudut Siku-Siku <i class="bi bi-check-circle-fill text-success"></i>'}
+  else if(currentAngle<180){type='Sudut Tumpul <i class="bi bi-record-circle-fill text-primary"></i>'}else if(currentAngle===180){type='Sudut Lurus <i class="bi bi-dash-lg text-danger"></i>'}else{type='Sudut Refleks <i class="bi bi-arrow-repeat text-purple"></i>'}
+  label.innerHTML=type;
+}
+function readAngle(){speak(`Sudut yang ditunjukkan adalah ${currentAngle} derajat. ${currentAngle<90?'Ini termasuk sudut lancip':currentAngle===90?'Ini adalah sudut siku siku':currentAngle<180?'Ini termasuk sudut tumpul':currentAngle===180?'Ini adalah sudut lurus':'Ini adalah sudut refleks'}!`,1.1,0.85);}
+function randomAngle(){const a=Math.floor(Math.random()*358)+1;document.getElementById('angleSlider').value=a;updateAngle(a);speak(`Sudut baru! ${a} derajat!`,1.2,0.9);}
+
+const latihanSudut=[
+  {q:'Sudut berapa yang disebut sudut siku-siku?',opts:['45°','90°','180°','120°'],ans:1},
+  {q:'Sudut 60° termasuk jenis sudut apa?',opts:['Tumpul','Lurus','Lancip','Refleks'],ans:2},
+  {q:'Sudut 150° termasuk jenis sudut apa?',opts:['Lancip','Siku-siku','Tumpul','Refleks'],ans:2},
+  {q:'Sudut berapa yang membentuk garis lurus?',opts:['90°','270°','360°','180°'],ans:3},
+  {q:'Mana yang termasuk sudut lancip?',opts:['95°','30°','180°','200°'],ans:1},
+];
+let latihanIdx=0,latihanScore=0;
+function initLatihan(){latihanIdx=0;latihanScore=0;renderLatihan();speak('Yuk latihan soal sudut!',1.1,0.85);}
+function renderLatihan(){
+  const lc=document.getElementById('latihanContent');
+  if(latihanIdx>=latihanSudut.length){
+    lc.innerHTML=`<div style="text-align:center;padding:30px"><div style="font-size:3rem;color:var(--yellow)"><i class="bi bi-star-fill"></i></div><div style="font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--purple)">Selesai! Nilaimu ${latihanScore}/${latihanSudut.length}</div><button class="calc-btn" onclick="initLatihan()" style="margin-top:20px;background:var(--purple)"><i class="bi bi-arrow-repeat"></i> Ulangi Latihan</button></div>`;
+    speak(`Selesai! Kamu mendapat nilai ${latihanScore} dari ${latihanSudut.length}.`,1.1,0.85);
+    if(latihanScore>=4){celebrate();addStars(3);}return;
+  }
+  const q=latihanSudut[latihanIdx];
+  let optsHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerLatihan(${i})">${o}</button>`).join('');
+  lc.innerHTML=`<div class="quiz-card"><div style="margin-bottom:15px;font-family:'Fredoka One',cursive;font-size:0.95rem;color:rgba(255,255,255,0.8)">Soal ${latihanIdx+1}/${latihanSudut.length} | Skor: <i class="bi bi-star-fill text-warning"></i> ${latihanScore}</div><div class="quiz-q">${q.q}</div><div class="quiz-options">${optsHTML}</div></div>`;
+  speak(q.q,1,0.85);
+}
+function answerLatihan(idx){
+  const q=latihanSudut[latihanIdx];const btns=document.querySelectorAll('#latihanContent .quiz-opt');
+  btns.forEach(b=>b.style.pointerEvents='none');
+  if(idx===q.ans){latihanScore++;btns[idx].classList.add('correct');speak('Benar!',1.2,0.9);celebrate();addStars(1);setMascot('','benar');}
+  else{btns[idx].classList.add('wrong');btns[q.ans].classList.add('correct');speak('Belum tepat, jawaban yang benar adalah '+q.opts[q.ans],1,0.85);setMascot('','salah');}
+  setTimeout(()=>{latihanIdx++;renderLatihan();},1800);
+}
+
+// ============================================================
+// KUIS (WITH TIMER & STREAK)
+// ============================================================
+const quizQuestions=[
+  {q:'Rumus luas persegi dengan sisi s adalah...',opts:['s + s','4 × s','s × s','2 × s'],ans:2},
+  {q:'Persegi panjang 8cm × 5cm. Berapakah kelilingnya?',opts:['40 cm','26 cm','13 cm','80 cm'],ans:1},
+  {q:'Sudut 75° termasuk sudut...',opts:['Tumpul','Lurus','Siku-siku','Lancip'],ans:3},
+  {q:'Luas lingkaran r=7cm adalah... (π=3.14)',opts:['43.96 cm²','153.86 cm²','21.98 cm²','49 cm²'],ans:1},
+  {q:'Segitiga alas 10cm tinggi 6cm. Luasnya?',opts:['60 cm²','30 cm²','16 cm²','32 cm²'],ans:1},
+  {q:'Sudut siku-siku besarnya...',opts:['45°','60°','90°','180°'],ans:2},
+  {q:'Rumus keliling lingkaran adalah...',opts:['π × r²','2 × π × r','π × d²','r × r'],ans:1},
+  {q:'Persegi sisi 6cm. Kelilingnya adalah...',opts:['12 cm','36 cm','24 cm','18 cm'],ans:2},
+  {q:'Sudut antara 90° dan 180° disebut...',opts:['Lancip','Siku-siku','Tumpul','Refleks'],ans:2},
+  {q:'Jajar genjang alas 9cm tinggi 4cm. Luasnya?',opts:['26 cm²','13 cm²','36 cm²','18 cm²'],ans:2},
+];
+
+let qIdx=0,qScore=0,quizDone=false,quizTimer=null,timeLeft=15,quizStreak=0;
+
+function initQuiz(){
+  qIdx=0;qScore=0;quizDone=false;quizStreak=0;
+  document.getElementById('congratsScreen').classList.remove('show');
+  document.getElementById('quizCard').style.display='block';
+  clearInterval(quizTimer);
+  renderQuiz();
+}
+
+function startTimer(){
+  timeLeft=15;clearInterval(quizTimer);
+  const circle=document.getElementById('timerCircle');
+  const text=document.getElementById('timerText');
+  const svg=document.getElementById('timerSvg');
+  const full=188;
+  svg.classList.remove('timer-urgent');
+  quizTimer=setInterval(()=>{
+    timeLeft--;
+    text.textContent=timeLeft;
+    circle.style.strokeDashoffset=full-(full*(timeLeft/15));
+    if(timeLeft<=5)svg.classList.add('timer-urgent');
+    if(timeLeft<=0){
+      clearInterval(quizTimer);
+      timeoutQuiz();
+    }
+  },1000);
+}
+
+function timeoutQuiz(){
+  const btns=document.querySelectorAll('#quizOptions .quiz-opt');
+  btns.forEach(b=>b.style.pointerEvents='none');
+  btns[quizQuestions[qIdx].ans].classList.add('correct');
+  quizStreak=0;
+  document.getElementById('streakShow').innerHTML='<div style="color:#FF4757;font-family:Fredoka One,cursive;font-size:1rem"><i class="bi bi-clock-history"></i> Waktu Habis!</div>';
+  speak('Waktu habis! Jawabannya adalah '+quizQuestions[qIdx].opts[quizQuestions[qIdx].ans],1,0.85);
+  setMascot('','salah');
+  setTimeout(()=>{qIdx++;renderQuiz();},2000);
+}
+
+function renderQuiz(){
+  if(qIdx>=quizQuestions.length){endQuiz();return;}
+  const q=quizQuestions[qIdx];
+  document.getElementById('qNum').textContent=qIdx+1;
+  document.getElementById('qScore').textContent=qScore;
+  document.getElementById('quizProgress').style.width=((qIdx/quizQuestions.length)*100)+'%';
+  document.getElementById('quizQuestion').textContent=q.q;
+  document.getElementById('quizShape').innerHTML='';
+  const optsEl=document.getElementById('quizOptions');
+  optsEl.innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${o}</button>`).join('');
+  // show streak
+  if(quizStreak>=2){document.getElementById('streakShow').innerHTML=`<div class="streak-display"><i class="bi bi-fire text-danger"></i> Streak ${quizStreak}x! Luar biasa!</div>`;}
+  else{document.getElementById('streakShow').innerHTML='';}
+  speak(q.q,1,0.85);
+  startTimer();
+}
+
+function answerQuiz(idx){
+  clearInterval(quizTimer);
+  const q=quizQuestions[qIdx];
+  const btns=document.querySelectorAll('#quizOptions .quiz-opt');
+  btns.forEach(b=>b.style.pointerEvents='none');
+  if(idx===q.ans){
+    qScore++;quizStreak++;
+    btns[idx].classList.add('correct');
+    if(quizStreak>=3){speak('STREAK LUAR BIASA! '+quizStreak+' berturut-turut!',1.3,0.9);addStars(quizStreak);}
+    else{speak('Betul!',1.2,0.9);addStars(1);}
+    celebrate();setMascot('','benar');
+    addStreak();
+  } else {
+    btns[idx].classList.add('wrong');btns[q.ans].classList.add('correct');
+    speak('Hmm, belum tepat.',1,0.85);quizStreak=0;resetStreak();setMascot('','salah');
+  }
+  setTimeout(()=>{qIdx++;renderQuiz();},2000);
+}
+
+function endQuiz(){
+  clearInterval(quizTimer);
+  document.getElementById('quizCard').style.display='none';
+  const cs=document.getElementById('congratsScreen');cs.classList.add('show');
+  document.getElementById('finalScore').textContent=qScore+'/10';
+  const pct=qScore/10;
+  let msg=pct>=0.9?'<i class="bi bi-star-fill text-warning"></i> Luar biasa! Kamu sangat cerdas!':pct>=0.7?'<i class="bi bi-hand-thumbs-up-fill text-primary"></i> Bagus sekali! Terus belajar ya!':pct>=0.5?'<i class="bi bi-emoji-smile-fill text-success"></i> Lumayan! Latihan lagi ya!':'<i class="bi bi-book-half"></i> Yuk belajar lagi! Kamu pasti bisa!';
+  document.getElementById('scoreMsg').innerHTML=msg;
+  const starsEarned=pct>=0.9?5:pct>=0.7?4:pct>=0.5?3:2;
+  
+  let starsHtml = '';
+  for(let i=0; i<starsEarned; i++) { starsHtml += '<i class="bi bi-star-fill"></i>'; }
+  document.getElementById('quizStarsEarned').innerHTML= starsHtml + ' +'+qScore*2+' bintang!';
+  
+  addStars(qScore*2);
+  if(gameState.bestQuizScore==='-'||qScore>parseInt(gameState.bestQuizScore)){
+    gameState.bestQuizScore=qScore+'/10';updateStats();saveState();
+  }
+  speak(`Kuis selesai! Kamu mendapat nilai ${qScore} dari 10!`,1.1,0.8);
+  if(pct>=1.0)showReward('perfect',qScore);
+  else if(pct>=0.7){showReward('good',qScore);if(pct>=0.7)celebrate();}
+  else showReward('ok',qScore);
+}
+function restartQuiz(){initQuiz();}
+
+// ============================================================
+// CELEBRATE
+// ============================================================
+function celebrate(){
+  const emojis=['<i class="bi bi-star-fill text-warning"></i>','<i class="bi bi-suit-heart-fill text-danger"></i>','<i class="bi bi-lightning-charge-fill text-warning"></i>','<i class="bi bi-award-fill text-primary"></i>','<i class="bi bi-balloon-fill text-info"></i>'];
+  for(let i=0;i<10;i++){
+    setTimeout(()=>{
+      const p=document.createElement('div');p.className='celebration-particle';
+      p.innerHTML=emojis[Math.floor(Math.random()*emojis.length)];
+      p.style.left=Math.random()*100+'vw';p.style.top='80vh';
+      p.style.animationDelay=Math.random()*0.5+'s';
+      document.body.appendChild(p);setTimeout(()=>p.remove(),2500);
+    },i*80);
+  }
+}
+
+// ============================================================
+// MINI GAME: TEBAK BAYANGAN
+// ============================================================
+const shadowShapes=[
+  {name:'Persegi',svg:'<rect x="10" y="10" width="130" height="130" rx="4"/>',label:'Persegi'},
+  {name:'Persegi Panjang',svg:'<rect x="5" y="30" width="140" height="90" rx="4"/>',label:'Persegi Panjang'},
+  {name:'Segitiga',svg:'<polygon points="75,5 145,145 5,145"/>',label:'Segitiga'},
+  {name:'Lingkaran',svg:'<circle cx="75" cy="75" r="65"/>',label:'Lingkaran'},
+  {name:'Trapesium',svg:'<polygon points="25,145 125,145 105,25 45,25"/>',label:'Trapesium'},
+  {name:'Jajar Genjang',svg:'<polygon points="25,130 130,130 125,25 20,25"/>',label:'Jajar Genjang'},
+  {name:'Belah Ketupat',svg:'<polygon points="75,5 145,75 75,145 5,75"/>',label:'Belah Ketupat'},
+];
+let shadowScore=0,shadowIdx=0,shadowTotal=8;
+
+function startGame(type){
+  const area=document.getElementById('gameArea');
+  area.style.display='block';
+  area.scrollIntoView({behavior:'smooth'});
+  if(type==='shadow') initShadowGame();
+  else if(type==='memory') initMemoryGame();
+  else if(type==='whack') initWhackGame();
+}
+
+function initShadowGame(){
+  shadowScore=0;shadowIdx=0;
+  renderShadowQuestion();
+  speak('Tebak bayangannya! Ayo mulai!',1.1,0.85);
+}
+
+function renderShadowQuestion(){
+  const area=document.getElementById('gameContent');
+  if(shadowIdx>=shadowTotal){
+    area.innerHTML=`<div style="text-align:center;padding:30px">
+      <div style="font-size:4rem;color:var(--yellow)"><i class="bi bi-star-fill"></i></div>
+      <div style="font-family:'Fredoka One',cursive;font-size:2rem;color:var(--purple)">Selesai!</div>
+      <div style="font-size:1.3rem;color:#555;margin:15px 0">Skor: <strong style="color:var(--orange)">${shadowScore}/${shadowTotal}</strong></div>
+      <button class="calc-btn" onclick="initShadowGame()" style="background:var(--purple)"><i class="bi bi-arrow-repeat"></i> Main Lagi!</button>
+    </div>`;
+    speak(`Selesai! Skor kamu ${shadowScore} dari ${shadowTotal}!`,1.1,0.85);
+    addStars(shadowScore);if(shadowScore>=6)celebrate();return;
+  }
+  // pick random shape
+  const correctShape=shadowShapes[Math.floor(Math.random()*shadowShapes.length)];
+  // shuffle options (3 wrong + 1 correct)
+  const wrong=shadowShapes.filter(s=>s.name!==correctShape.name).sort(()=>Math.random()-0.5).slice(0,3);
+  const opts=[...wrong,correctShape].sort(()=>Math.random()-0.5);
+
+  area.innerHTML=`
+    <div style="text-align:center">
+      <h3 style="font-family:'Fredoka One',cursive;color:var(--purple);font-size:1.5rem;margin-bottom:5px"><i class="bi bi-eye-fill"></i> Tebak Bayangannya!</h3>
+      <div style="color:#888;font-weight:700;margin-bottom:15px">Soal ${shadowIdx+1}/${shadowTotal} | <i class="bi bi-star-fill text-warning"></i> ${shadowScore}</div>
+      <svg width="150" height="150" viewBox="0 0 150 150" style="filter:brightness(0);opacity:0.75;margin:10px auto;display:block;animation:shadowPulse 2s ease-in-out infinite">
+        ${correctShape.svg}
+      </svg>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;max-width:400px;margin-left:auto;margin-right:auto">
+        ${opts.map(o=>`<button class="shadow-opt" onclick="answerShadow('${o.name}','${correctShape.name}',this)">${o.label}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function answerShadow(chosen,correct,btn){
+  document.querySelectorAll('.shadow-opt').forEach(b=>b.style.pointerEvents='none');
+  if(chosen===correct){shadowScore++;btn.classList.add('correct');speak('Benar! Itu '+correct+'!',1.2,0.9);celebrate();addStars(1);setMascot('','benar');}
+  else{btn.classList.add('wrong');speak('Belum tepat! Itu '+correct,1,0.85);setMascot('','salah');
+    document.querySelectorAll('.shadow-opt').forEach(b=>{if(b.textContent===correct||b.textContent.trim()===correct)b.classList.add('correct');});}
+  shadowIdx++;setTimeout(renderShadowQuestion,1800);
+}
+
+// ============================================================
+// MINI GAME: MEMORY MATCH
+// ============================================================
+const memPairs=[
+  {a:'Persegi',b:'K = 4×s'},{a:'Lingkaran',b:'L = πr²'},
+  {a:'Segitiga',b:'L = ½×a×t'},{a:'Trapesium',b:'L = ½(a+b)t'},
+  {a:'Persegi Panjang',b:'K = 2(p+l)'},{a:'Jajar Genjang',b:'L = a×t'},
+  {a:'Persegi',b:'L = s×s'},{a:'Lingkaran',b:'K = 2πr'},
+];
+
+let memFlipped=[],memMatched=0,memLocked=false,memMoves=0;
+
+function initMemoryGame(){
+  const cards=[...memPairs.flatMap(p=>[{text:p.a,pair:p.a+p.b,type:'shape'},{text:p.b,pair:p.a+p.b,type:'formula'}])].sort(()=>Math.random()-0.5);
+  memFlipped=[];memMatched=0;memLocked=false;memMoves=0;
+  const area=document.getElementById('gameContent');
+  area.innerHTML=`
+    <h3 style="font-family:'Fredoka One',cursive;color:var(--purple);font-size:1.5rem;text-align:center;margin-bottom:10px"><i class="bi bi-suit-spade-fill"></i> Kartu Ingatan!</h3>
+    <div style="text-align:center;color:#888;font-weight:700;margin-bottom:15px">Temukan pasangannya! Gerakan: <span id="memMoves">0</span></div>
+    <div class="memory-grid" id="memoryGrid">
+      ${cards.map((c,i)=>`
+        <div class="memory-card-wrap" onclick="flipCard(${i})">
+          <div class="memory-card" id="mc${i}" data-pair="${c.pair}" data-text="${c.text}">
+            <div class="memory-front"><i class="bi bi-question-circle-fill"></i></div>
+            <div class="memory-back">${c.text}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  speak('Kartu ingatan! Klik kartu untuk membukanya, cari pasangannya!',1.1,0.85);
+}
+
+function flipCard(idx){
+  if(memLocked)return;
+  const card=document.getElementById('mc'+idx);
+  if(card.classList.contains('flipped')||card.classList.contains('matched'))return;
+  card.classList.add('flipped');
+  memFlipped.push({idx,card,pair:card.dataset.pair,text:card.dataset.text});
+  if(memFlipped.length===2){
+    memLocked=true;memMoves++;document.getElementById('memMoves').textContent=memMoves;
+    const [a,b]=memFlipped;
+    if(a.pair===b.pair&&a.text!==b.text){
+      // MATCH
+      setTimeout(()=>{
+        a.card.classList.add('matched');b.card.classList.add('matched');
+        a.card.querySelector('.memory-back').classList.add('matched-bg');
+        b.card.querySelector('.memory-back').classList.add('matched-bg');
+        memMatched++;memFlipped=[];memLocked=false;
+        celebrate();addStars(1);speak('Cocok! Luar biasa!',1.2,0.9);
+        if(memMatched===memPairs.length){
+          setTimeout(()=>{
+            document.getElementById('gameContent').innerHTML+=`<div style="text-align:center;padding:20px;margin-top:15px;background:var(--green-light);border-radius:20px"><div style="font-size:3rem;color:var(--green)"><i class="bi bi-trophy-fill"></i></div><div style="font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--green)">Semua Cocok!</div><div style="font-size:1.1rem;font-weight:700;color:#555">${memMoves} gerakan</div><button class="calc-btn" onclick="initMemoryGame()" style="margin-top:15px;background:var(--purple)"><i class="bi bi-arrow-repeat"></i> Main Lagi!</button></div>`;
+            celebrate();addStars(5);speak('Semua kartu cocok! Hebat sekali!',1.2,0.85);
+          },500);
+        }
+      },600);
+    } else {
+      setTimeout(()=>{a.card.classList.remove('flipped');b.card.classList.remove('flipped');memFlipped=[];memLocked=false;},1000);
+    }
+  }
+}
+
+// ============================================================
+// MINI GAME: WHACK-A-MOLE STYLE (Pukul Angkanya)
+// ============================================================
+let whackScore=0,whackTimer=null,whackQ=null,whackTime=30;
+
+function initWhackGame(){
+  whackScore=0;whackTime=30;
+  const area=document.getElementById('gameContent');
+  area.innerHTML=`
+    <h3 style="font-family:'Fredoka One',cursive;color:var(--orange);font-size:1.5rem;text-align:center;margin-bottom:5px"><i class="bi bi-hammer"></i> Pukul Angkanya!</h3>
+    <div style="display:flex;justify-content:space-between;margin-bottom:15px;font-family:'Fredoka One',cursive;font-size:1.1rem">
+      <span><i class="bi bi-stopwatch text-dark"></i> <span id="whackTime">30</span>s</span>
+      <span><i class="bi bi-star-fill text-warning"></i> <span id="whackScore">0</span></span>
+    </div>
+    <div id="whackQuestion" style="font-family:'Fredoka One',cursive;font-size:2.5rem;text-align:center;color:var(--dark);margin:15px 0;animation:questionPop .3s"></div>
+    <div id="whackGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:400px;margin:0 auto"></div>`;
+  nextWhack();
+  const countdown=setInterval(()=>{
+    whackTime--;document.getElementById('whackTime').textContent=whackTime;
+    if(whackTime<=0){clearInterval(countdown);clearTimeout(whackTimer);endWhack();}
+  },1000);
+  speak('Pukul kotak jawaban yang benar! Secepat mungkin!',1.1,0.85);
+}
+
+function nextWhack(){
+  const ops=['+','-','×'];const op=ops[Math.floor(Math.random()*3)];
+  let a,b,ans;
+  if(op==='+'){a=Math.floor(Math.random()*20)+1;b=Math.floor(Math.random()*20)+1;ans=a+b;}
+  else if(op==='-'){a=Math.floor(Math.random()*20)+10;b=Math.floor(Math.random()*10)+1;ans=a-b;}
+  else{a=Math.floor(Math.random()*9)+2;b=Math.floor(Math.random()*9)+2;ans=a*b;}
+  whackQ={ans};
+  const qEl=document.getElementById('whackQuestion');
+  if(qEl)qEl.textContent=`${a} ${op} ${b} = ?`;
+  // generate options
+  const opts=new Set([ans]);
+  while(opts.size<9){opts.add(ans+Math.floor(Math.random()*20)-10);}
+  const optArr=[...opts].sort(()=>Math.random()-0.5);
+  const grid=document.getElementById('whackGrid');
+  if(grid){grid.innerHTML=optArr.map(v=>`<button onclick="hitWhack(${v},this)" style="background:${['var(--pink-light)','var(--blue-light)','var(--green-light)','var(--yellow-light)','var(--orange-light)','var(--purple-light)'][Math.floor(Math.random()*6)]};border:3px solid rgba(0,0,0,0.1);border-radius:16px;padding:18px;font-family:'Fredoka One',cursive;font-size:1.5rem;cursor:pointer;transition:all .2s;color:var(--dark)" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">${v}</button>`).join('');}
+}
+
+function hitWhack(val,btn){
+  if(!whackQ)return;
+  if(val===whackQ.ans){
+    btn.style.background='var(--green)';btn.style.color='#fff';
+    whackScore++;document.getElementById('whackScore').textContent=whackScore;
+    addStars(1);
+  } else {
+    btn.style.background='var(--red)';btn.style.color='#fff';
+  }
+  setTimeout(nextWhack,400);
+}
+
+function endWhack(){
+  const area=document.getElementById('gameContent');
+  area.innerHTML=`<div style="text-align:center;padding:30px">
+    <div style="font-size:4rem;color:var(--orange)"><i class="bi bi-hammer"></i></div>
+    <div style="font-family:'Fredoka One',cursive;font-size:2rem;color:var(--orange)">Waktu Habis!</div>
+    <div style="font-size:1.5rem;font-weight:700;color:var(--dark);margin:15px 0">Skor: <strong style="color:var(--orange);font-size:2rem">${whackScore}</strong> <i class="bi bi-check-circle-fill text-success"></i></div>
+    <button class="calc-btn" onclick="initWhackGame()" style="background:var(--orange);margin-top:10px"><i class="bi bi-arrow-repeat"></i> Main Lagi!</button>
+  </div>`;
+  if(whackScore>=10)celebrate();
+  speak(`Waktu habis! Skor kamu ${whackScore}! ${whackScore>=10?'Luar biasa!':'Coba lagi ya!'}`,1.1,0.85);
+}
+
+// ============================================================
+// SPEED MATH (HITUNG CEPAT)
+// ============================================================
+let speedLevel='mudah',speedQ=0,speedScore=0,speedCombo=0,speedTotal=15;
+let speedTimer=null,speedTimeLeft=8,speedCorrectAns=0;
+
+function startSpeedGame(level){
+  speedLevel=level;speedQ=0;speedScore=0;speedCombo=0;
+  document.getElementById('speedGameArea').style.display='none';
+  document.getElementById('speedGameResult').style.display='none';
+  document.getElementById('speedGamePlay').style.display='block';
+  const highText=speedHighScores[level]>0?`Rekor: ${speedHighScores[level]} <i class="bi bi-star-fill text-warning"></i>`:'';
+  nextSpeedQuestion();
+  speak(`Level ${level}! Ayo mulai hitung cepat!`,1.2,0.9);
+}
+
+function stopSpeedGame(){
+  clearInterval(speedTimer);showSpeedResult();
+}
+
+function nextSpeedQuestion(){
+  if(speedQ>=speedTotal){showSpeedResult();return;}
+  clearInterval(speedTimer);
+  const q=generateSpeedQ();speedCorrectAns=q.ans;
+  document.getElementById('speedQuestion').textContent=q.text+' = ?';
+  document.getElementById('speedQNum').textContent=speedQ+1;
+  document.getElementById('speedScore').textContent=speedScore;
+  document.getElementById('comboCount').textContent=speedCombo;
+  document.getElementById('speedInput').value='';
+  document.getElementById('speedFeedback').textContent='';
+  document.getElementById('speedInput').focus();
+
+  // Timer bar
+  const timeLimit=speedLevel==='mudah'?10:speedLevel==='sedang'?8:6;
+  speedTimeLeft=timeLimit;
+  const bar=document.getElementById('speedTimerBar');
+  bar.style.width='100%';
+  bar.style.background=speedLevel==='mudah'?'var(--green)':speedLevel==='sedang'?'var(--orange)':'var(--red)';
+  clearInterval(speedTimer);
+  speedTimer=setInterval(()=>{
+    speedTimeLeft-=0.1;
+    bar.style.width=(speedTimeLeft/timeLimit*100)+'%';
+    if(speedTimeLeft<=0){clearInterval(speedTimer);speedTimeoutQ();}
+  },100);
+}
+
+function generateSpeedQ(){
+  let a,b,op,ans;
+  if(speedLevel==='mudah'){
+    op=['+','-'][Math.floor(Math.random()*2)];
+    a=Math.floor(Math.random()*50)+1;b=Math.floor(Math.random()*50)+1;
+    if(op==='-'&&b>a)[a,b]=[b,a];
+    ans=op==='+'?a+b:a-b;
+  } else if(speedLevel==='sedang'){
+    op=['×','÷'][Math.floor(Math.random()*2)];
+    if(op==='×'){a=Math.floor(Math.random()*9)+2;b=Math.floor(Math.random()*9)+2;ans=a*b;}
+    else{b=Math.floor(Math.random()*9)+2;ans=Math.floor(Math.random()*9)+2;a=b*ans;}
+  } else {
+    op=['+','-','×','÷'][Math.floor(Math.random()*4)];
+    if(op==='+'){a=Math.floor(Math.random()*100)+1;b=Math.floor(Math.random()*100)+1;ans=a+b;}
+    else if(op==='-'){a=Math.floor(Math.random()*100)+50;b=Math.floor(Math.random()*50)+1;ans=a-b;}
+    else if(op==='×'){a=Math.floor(Math.random()*12)+2;b=Math.floor(Math.random()*12)+2;ans=a*b;}
+    else{b=Math.floor(Math.random()*9)+2;ans=Math.floor(Math.random()*9)+2;a=b*ans;}
+  }
+  return{text:`${a} ${op} ${b}`,ans};
+}
+
+function checkSpeedAnswer(){
+  const val=parseInt(document.getElementById('speedInput').value);
+  if(isNaN(val))return;
+  if(val===speedCorrectAns){
+    clearInterval(speedTimer);speedQ++;speedScore++;speedCombo++;
+    const fb=document.getElementById('speedFeedback');
+    fb.style.color='var(--green)';
+    fb.innerHTML=speedCombo>=3?`<i class="bi bi-fire text-danger"></i> COMBO ${speedCombo}x! +${speedCombo} <i class="bi bi-star-fill text-warning"></i>`:'<i class="bi bi-check-circle-fill"></i> Benar! +1 <i class="bi bi-star-fill text-warning"></i>';
+    addStars(Math.max(1,speedCombo>=3?speedCombo:1));
+    setTimeout(nextSpeedQuestion,400);
+  }
+}
+
+function speedTimeoutQ(){
+  speedQ++;speedCombo=0;
+  document.getElementById('speedFeedback').style.color='var(--red)';
+  document.getElementById('speedFeedback').innerHTML='<i class="bi bi-stopwatch"></i> Waktu habis! Jawaban: '+speedCorrectAns;
+  setTimeout(nextSpeedQuestion,1000);
+}
+
+function showSpeedResult(){
+  clearInterval(speedTimer);
+  document.getElementById('speedGamePlay').style.display='none';
+  document.getElementById('speedGameResult').style.display='block';
+  const isRecord=speedScore>speedHighScores[speedLevel];
+  if(isRecord) { speedHighScores[speedLevel]=speedScore; saveState(); }
+  const emoji=speedScore>=12?'<i class="bi bi-trophy-fill"></i>':speedScore>=8?'<i class="bi bi-star-fill"></i>':speedScore>=5?'<i class="bi bi-emoji-smile-fill"></i>':'<i class="bi bi-hand-thumbs-up-fill"></i>';
+  document.getElementById('speedResultEmoji').innerHTML=emoji;
+  document.getElementById('speedResultTitle').textContent=speedScore>=12?'LUAR BIASA!':speedScore>=8?'Bagus Sekali!':speedScore>=5?'Lumayan!':'Coba Lagi Ya!';
+  document.getElementById('speedResultStats').innerHTML=`<i class="bi bi-check-circle-fill text-success"></i> ${speedScore}/${speedTotal} benar`;
+  document.getElementById('speedResultRecord').innerHTML=isRecord?`<i class="bi bi-balloon-fill text-danger"></i> REKOR BARU! ${speedScore} <i class="bi bi-star-fill text-warning"></i>`:`Rekor terbaik: ${speedHighScores[speedLevel]} <i class="bi bi-star-fill text-warning"></i>`;
+  addStars(speedScore);
+  if(speedScore>=10)celebrate();
+  speak(`Selesai! Kamu benar ${speedScore} dari ${speedTotal}. ${isRecord?'Rekor baru!':''}`,1.1,0.85);
+}
+
+function showSpeedMenu(){
+  document.getElementById('speedGamePlay').style.display='none';
+  document.getElementById('speedGameResult').style.display='none';
+  document.getElementById('speedGameArea').style.display='block';
+  const hs=document.getElementById('speedHighScore');
+  hs.innerHTML=Object.entries(speedHighScores).map(([k,v])=>v>0?`${k}: ${v} <i class="bi bi-star-fill text-warning"></i>`:'').filter(Boolean).join(' | ')||'';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload=()=>{
+  initDragDrop();
+  drawProtractor(90);
+  updateStats();
+  speak('Halo! Aku Olly! Yuk belajar matematika yang seru bersama sama!',1.1,0.8);
+};
+</script>
+</body>
+</html>
