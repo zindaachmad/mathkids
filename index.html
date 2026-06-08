@@ -237,7 +237,7 @@
     border-radius:14px; display:flex; align-items:center; justify-content:center;
     font-size:1.6rem; font-family:'Fredoka One',cursive; border:3px solid rgba(0,0,0,0.1); }
   .memory-front { background:linear-gradient(135deg,var(--purple),#5a0090); color:#fff; }
-  .memory-back { background:#fff; transform:rotateY(180deg); }
+  .memory-back { background:#fff; transform:rotateY(180deg); overflow: hidden; padding: 4px;}
   .memory-back.matched-bg { background:var(--green-light); }
 
   /* ===== CONGRATS ===== */
@@ -281,7 +281,39 @@
   .materi-box { display:none; }
   .materi-box.active { display:block; animation:fadeIn .4s; }
 
-  .rumus-bank { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+  /* Update rumus-bank agar bisa menerima kartu yang dikembalikan */
+  .rumus-bank { 
+    display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px;
+    min-height: 60px; padding: 10px; border: 3px dashed transparent; 
+    border-radius: 16px; transition: all .3s; 
+  }
+  .rumus-bank.dragover { background: rgba(0,0,0,0.03); border-color: #ccc; }
+
+    /* ===== BGM BUTTON ===== */
+  .bgm-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: var(--dark);
+    color: #fff;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all .3s;
+  }
+  .bgm-btn:hover { transform: scale(1.1) rotate(-5deg); background: var(--purple); }
+  .bgm-btn.muted { background: var(--red); color: rgba(255,255,255,0.8); }
+
+/* Trik agar tulisan muncul otomatis saat kotak kosong */
+.drop-area:empty::before { content: 'Seret ke sini'; color: #ccc; font-size: 0.9rem; }
 
   @media(max-width:600px) {
     .hero-title{font-size:2.2rem}
@@ -303,6 +335,10 @@
   <div id="rewardMsg" style="font-size:1rem;color:#666;margin:10px 0;font-weight:700"></div>
   <button class="calc-btn" onclick="closeReward()" style="margin-top:15px;background:var(--purple)"><i class="bi bi-check2-circle"></i> Sip, Terima Kasih!</button>
 </div>
+
+<button class="bgm-btn muted" id="bgmBtn" onclick="toggleBgm()" title="Nyalakan/Matikan Musik">
+  <i class="bi bi-volume-mute-fill"></i>
+</button>
 
 <div class="main-container">
   <h1 class="hero-title"><i class="bi bi-stars text-warning"></i> MatKu <i class="bi bi-stars text-warning"></i></h1>
@@ -330,15 +366,15 @@
   <div class="nav-tabs-custom">
     <button class="nav-btn btn-bangun active" onclick="showSection('bangun')"><i class="bi bi-bounding-box-circles"></i> Bangun Datar</button>
     <button class="nav-btn btn-sudut" onclick="showSection('sudut')"><i class="bi bi-triangle-half"></i> Jenis Sudut</button>
-    <button class="nav-btn btn-kuis" onclick="showSection('kuis')"><i class="bi bi-controller"></i> Kuis Seru!</button>
-    <button class="nav-btn btn-game" onclick="showSection('game')"><i class="bi bi-joystick"></i> Mini Game!</button>
-    <button class="nav-btn btn-hitung" onclick="showSection('hitung')"><i class="bi bi-lightning-charge-fill"></i> Hitung Cepat!</button>
+    <button class="nav-btn btn-kuis" onclick="showSection('kuis')"><i class="bi bi-controller"></i> Kuis Seru</button>
+    <button class="nav-btn btn-game" onclick="showSection('game')"><i class="bi bi-joystick"></i> Mini Game</button>
+    <button class="nav-btn btn-hitung" onclick="showSection('hitung')"><i class="bi bi-lightning-charge-fill"></i> Hitung Cepat</button>
   </div>
 
   <div class="section active" id="sec-bangun">
     <div class="card-fun">
-      <h2 class="section-title"><i class="bi bi-bounding-box-circles"></i> Bangun Datar — Keliling & Luas</h2>
-      <p style="text-align:center;color:#666;font-size:1rem;margin-bottom:20px;">Klik bangun yang ingin kamu pelajari! <i class="bi bi-hand-index-thumb"></i></p>
+      <h2 class="section-title">Keliling & Luas Bangun Datar</h2>
+      <p style="text-align:center;color:#666;font-size:1rem;margin-bottom:20px;">Klik bangun yang ingin kamu pelajari!</p>
       <div class="shape-grid" id="shapeGrid">
         <div class="shape-card" style="background:var(--pink-light)" onclick="selectShape('persegi')">
           <svg class="shape-svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="var(--pink)" rx="4" stroke="#c94f7c" stroke-width="3"/><text x="50" y="55" text-anchor="middle" fill="white" font-size="11" font-family="Nunito" font-weight="700">s × s</text></svg>
@@ -372,12 +408,12 @@
     </div>
 
     <div class="card-fun">
-      <h2 class="section-title"><i class="bi bi-arrows-move"></i> Drag & Drop — Cocokkan Rumusnya!</h2>
-      <p style="text-align:center;color:#666;margin-bottom:20px;">Seret kartu rumus ke tempat yang benar! <i class="bi bi-hand-index"></i></p>
+      <h2 class="section-title">Cocokkan Rumusnya!</h2>
+      <p style="text-align:center;color:#666;margin-bottom:20px;">Seret kartu rumus ke tempat yang benar!</p>
       <div class="rumus-bank" id="rumusBank"></div>
       <div class="drop-targets" id="dropTargets"></div>
       <div style="text-align:center;margin-top:20px">
-        <button class="calc-btn" onclick="checkDragDrop()" style="background:var(--purple);margin-right:10px"><i class="bi bi-check-circle"></i> Periksa!</button>
+        <button class="calc-btn" onclick="checkDragDrop()" style="background:var(--purple);margin-right:10px"><i class="bi bi-check-circle"></i> Periksa</button>
         <button class="calc-btn" onclick="resetDragDrop()" style="background:var(--orange)"><i class="bi bi-arrow-clockwise"></i> Reset</button>
       </div>
       <div id="dragResult" style="margin-top:15px;display:none"></div>
@@ -470,7 +506,7 @@
         <div class="angle-display" id="angleDegDisplay">90°</div>
         <div class="angle-label" id="angleTypeDisplay">Sudut Siku-Siku <i class="bi bi-check-circle-fill text-success"></i></div>
         <div class="slider-section" style="padding:0 20px;margin-top:20px">
-          <input type="range" class="angle-slider" id="angleSlider" min="1" max="359" value="90" oninput="updateAngle(this.value)">
+          <input type="range" class="angle-slider" id="angleSlider" min="0" max="360" value="90" oninput="updateAngle(this.value)">
         </div>
         <div style="display:flex;justify-content:space-between;padding:0 20px;color:#888;font-size:0.85rem;font-weight:600">
           <span>0°</span><span>90°</span><span>180°</span><span>270°</span><span>360°</span>
@@ -491,7 +527,14 @@
     <div class="card-fun">
       <h2 class="section-title"><i class="bi bi-controller"></i> Kuis Super Seru!</h2>
       <div id="quizContainer">
-        <div class="quiz-card" id="quizCard">
+        <div id="quizStartScreen" style="text-align:center; padding: 30px;">
+          <div style="font-size: 4rem; color: var(--yellow);"><i class="bi bi-controller"></i></div>
+          <h3 style="font-family:'Fredoka One',cursive; font-size:2rem; color:var(--purple); margin: 15px 0;">Siap Uji Pengetahuanmu?</h3>
+          <p style="font-size:1.2rem; color:#555; margin-bottom: 25px; font-weight:700;">Waktu 15 detik per soal. Jawab cepat untuk Streak bintang!</p>
+          <button class="calc-btn" onclick="startQuizGame()" style="background:var(--green); font-size:1.3rem; padding: 15px 30px;"><i class="bi bi-play-circle-fill"></i> Mulai Kuis!</button>
+        </div>
+
+        <div class="quiz-card" id="quizCard" style="display:none;">
           <div class="progress-bar"><div class="progress-fill" id="quizProgress" style="width:0%"></div></div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
             <span style="font-family:'Fredoka One',cursive;font-size:1rem">Soal <span id="qNum">1</span>/10</span>
@@ -507,6 +550,7 @@
           <div id="quizShape" style="margin:15px 0"></div>
           <div class="quiz-options" id="quizOptions"></div>
         </div>
+
         <div class="congrats" id="congratsScreen">
           <div class="congrats-emoji"><i class="bi bi-balloon-fill text-danger"></i></div>
           <div class="congrats-title">Hebat Sekali!</div>
@@ -521,24 +565,24 @@
 
   <div class="section" id="sec-game">
     <div class="card-fun">
-      <h2 class="section-title"><i class="bi bi-joystick"></i> Pilih Mini Game!</h2>
+      <h2 class="section-title">Pilih Mini Game</h2>
       <div class="game-grid">
         <div class="game-card" style="background:linear-gradient(135deg,#FFD93D,#FF9A3C);color:var(--dark)" onclick="startGame('shadow')">
           <div class="game-icon"><i class="bi bi-eye-fill text-dark"></i></div>
-          <div class="game-title">Tebak Bayangannya!</div>
-          <div class="game-desc">Tebak nama bangun datar dari bayangannya!</div>
+          <div class="game-title">Tebak Bayangannya</div>
+          <div class="game-desc">Tebak nama bangun datar dari bayangannya</div>
           <div class="game-badge"><i class="bi bi-star-fill"></i> Mudah</div>
         </div>
         <div class="game-card" style="background:linear-gradient(135deg,#4D96FF,#764ba2);color:#fff" onclick="startGame('memory')">
           <div class="game-icon"><i class="bi bi-suit-spade-fill text-white"></i></div>
-          <div class="game-title">Kartu Ingatan!</div>
-          <div class="game-desc">Temukan pasangan rumus matematika!</div>
+          <div class="game-title">Kartu Ingatan</div>
+          <div class="game-desc">Temukan pasangan rumus matematika</div>
           <div class="game-badge"><i class="bi bi-fire"></i> Sedang</div>
         </div>
         <div class="game-card" style="background:linear-gradient(135deg,#6BCB77,#00C9A7);color:#fff" onclick="startGame('whack')">
           <div class="game-icon"><i class="bi bi-hammer text-white"></i></div>
-          <div class="game-title">Pukul Angkanya!</div>
-          <div class="game-desc">Pukul kotak jawaban yang benar secepat mungkin!</div>
+          <div class="game-title">Pukul Angkanya</div>
+          <div class="game-desc">Pukul kotak jawaban yang benar secepat mungkin</div>
           <div class="game-badge"><i class="bi bi-lightning-charge-fill"></i> Cepat</div>
         </div>
       </div>
@@ -551,10 +595,10 @@
 
   <div class="section" id="sec-hitung">
     <div class="card-fun">
-      <h2 class="section-title"><i class="bi bi-lightning-charge-fill"></i> Hitung Cepat — Speed Math!</h2>
+      <h2 class="section-title"><i class="bi bi-lightning-charge-fill"></i> Hitung Cepat</h2>
       <div id="speedGameArea">
         <div style="text-align:center;padding:20px">
-          <div style="font-size:1.1rem;color:#555;font-weight:700;margin-bottom:20px">Pilih level tantanganmu! <i class="bi bi-emoji-smile-fill text-warning"></i></div>
+          <div style="font-size:1.1rem;color:#555;font-weight:700;margin-bottom:20px">Pilih level tantanganmu!</div>
           <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap">
             <button class="calc-btn" onclick="startSpeedGame('mudah')" style="background:var(--green);font-size:1.2rem;padding:15px 30px"><i class="bi bi-tree-fill"></i> Mudah<br><small style="font-size:0.8rem">+ dan −</small></button>
             <button class="calc-btn" onclick="startSpeedGame('sedang')" style="background:var(--orange);font-size:1.2rem;padding:15px 30px"><i class="bi bi-fire"></i> Sedang<br><small style="font-size:0.8rem">× dan ÷</small></button>
@@ -594,8 +638,9 @@
 </div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ============================================================
-// STARS
+// STARS & GLOBAL VARIABLES
 // ============================================================
+let isPlayingGame = false; // Penanda global bila user ada di tengah game
 function createStars(){
   for(let i=0;i<25;i++){
     const s=document.createElement('div');s.className='star';
@@ -615,6 +660,80 @@ function speak(text,pitch=1,rate=0.9){
   const u=new SpeechSynthesisUtterance(text);
   u.lang='id-ID';u.pitch=pitch;u.rate=rate;u.volume=1;
   setTimeout(()=>synth.speak(u),100);
+}
+
+// ============================================================
+// BACKGROUND MUSIC (BGM)
+// ============================================================
+// Menggunakan link langsung audio Lo-Fi/Chill dari Mixkit (bebas hak cipta, tidak perlu download)
+const bgm = new Audio('main.mp3');
+bgm.loop = true; // Musik akan berulang terus
+bgm.volume = 0.15; // VOLUME SANGAT KECIL (15%) agar tidak mengganggu konsentrasi
+
+let bgmPlaying = false;
+
+function toggleBgm() {
+  const btn = document.getElementById('bgmBtn');
+  if (bgmPlaying) {
+    bgm.pause();
+    btn.classList.add('muted');
+    btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+  } else {
+    // Gunakan try-catch karena kadang browser butuh interaksi lebih kuat
+    let playPromise = bgm.play();
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+        btn.classList.remove('muted');
+        btn.innerHTML = '<i class="bi bi-music-note-beamed"></i>';
+      }).catch(error => console.log("Autoplay dicegah oleh browser"));
+    }
+  }
+  bgmPlaying = !bgmPlaying;
+}
+
+// TRIK: Otomatis memutar BGM saat user mengeklik di mana saja pertama kali
+document.body.addEventListener('click', function startAudioOnFirstClick() {
+  if (!bgmPlaying) {
+    toggleBgm();
+  }
+  // Setelah berhasil diputar sekali, hapus event listener ini agar tidak double-play
+  document.body.removeEventListener('click', startAudioOnFirstClick);
+}, { once: true });
+
+// ============================================================
+// SFX (WEB AUDIO API) untuk Dopamine Boost!
+// ============================================================
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+  // Resume audio context jika browser men-suspend (kebijakan autoplay)
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  
+  const osc = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+  
+  osc.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  
+  if (type === 'benar') {
+    // SFX "Ting!" (Frekuensi naik cepat)
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+    gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.5);
+  } else if (type === 'salah') {
+    // SFX "Tet-tot!" (Frekuensi turun)
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.3);
+  }
 }
 
 // ============================================================
@@ -722,19 +841,41 @@ function closeReward(){
 }
 
 // ============================================================
-// SECTION NAV
+// SECTION NAV & GLOBAL GUARD
 // ============================================================
 function showSection(name){
+  // Cek apakah game sedang berjalan untuk memicu warning preventif
+  if(isPlayingGame) {
+    if(!confirm("Kamu sedang bermain! Yakin ingin keluar dari permainan dan pindah halaman? Progress permainanmu akan hilang.")) {
+      return; // Batalkan perpindahan halaman jika tidak yakin
+    }
+    
+    // Matikan game flag dan bersihkan semua timer aktif
+    isPlayingGame = false;
+    if(typeof quizTimer !== 'undefined') clearInterval(quizTimer);
+    if(typeof speedTimer !== 'undefined') clearInterval(speedTimer);
+    if(typeof whackTimer !== 'undefined') clearInterval(whackTimer);
+    
+    // Kembalikan area bermain ke layar Menu Mulai agar siap dipakai ulang
+    document.getElementById('quizCard').style.display='none';
+    document.getElementById('quizStartScreen').style.display='block';
+    document.getElementById('speedGamePlay').style.display='none';
+    document.getElementById('speedGameArea').style.display='block';
+  }
+
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('sec-'+name).classList.add('active');
   const map={bangun:'btn-bangun',sudut:'btn-sudut',kuis:'btn-kuis',game:'btn-game',hitung:'btn-hitung'};
   document.querySelector('.'+map[name]).classList.add('active');
   setMascot(name);
+  
+  // Jangan langsung jalankan timer game, hanya buka halaman setup (Menu Kuis)
   if(name==='kuis') initQuiz();
   if(name==='sudut') setTimeout(()=>drawProtractor(90),100);
+  
   const msgs={bangun:'Mari belajar bangun datar! Keliling dan luas itu seru!',
-    sudut:'Yuk mengenal macam macam sudut!',kuis:'Saatnya kuis dengan timer! Siap siap ya!',
+    sudut:'Yuk mengenal macam macam sudut!',kuis:'Saatnya kuis! Tekan tombol mulai jika sudah siap!',
     game:'Wah ada mini game! Pilih game yang kamu mau!',hitung:'Hitung cepat! Latih otakmu!'};
   speak(msgs[name]||'',1.1,0.85);
 }
@@ -839,58 +980,124 @@ const ddData=[
 let ddAnswers={},draggedItem=null;
 
 function initDragDrop(){
-  const bank=document.getElementById('rumusBank');const targets=document.getElementById('dropTargets');
-  if(!bank)return;bank.innerHTML='';targets.innerHTML='';ddAnswers={};
+  const bank=document.getElementById('rumusBank');
+  const targets=document.getElementById('dropTargets');
+  if(!bank)return;
+  bank.innerHTML=''; targets.innerHTML=''; ddAnswers={};
+  
   const allFormulas=[];
   ddData.forEach(d=>{allFormulas.push({text:d.keliling,type:'keliling',shape:d.shape},{text:d.luas,type:'luas',shape:d.shape})});
   allFormulas.sort(()=>Math.random()-0.5);
   const colors=['var(--pink)','var(--blue)','var(--green)','var(--orange)','var(--purple)','var(--yellow)'];
+
+  // Buat area Bank Rumus menjadi Drop Target juga (untuk membuang kartu)
+  bank.addEventListener('dragover', e => { e.preventDefault(); bank.classList.add('dragover'); });
+  bank.addEventListener('dragleave', () => bank.classList.remove('dragover'));
+  bank.addEventListener('drop', e => {
+    e.preventDefault(); bank.classList.remove('dragover');
+    if(!draggedItem) return;
+    bank.appendChild(draggedItem);
+    updateAnswers();
+  });
+
   allFormulas.forEach((f,i)=>{
     const el=document.createElement('div');el.className='drag-item';
     el.style.background=colors[i%colors.length];
     el.style.color=colors[i%colors.length]==='var(--yellow)'?'var(--dark)':'white';
     el.textContent=f.text;el.draggable=true;el.dataset.formula=f.text;el.dataset.type=f.type;el.dataset.shape=f.shape;
-    el.addEventListener('dragstart',e=>{draggedItem=el;el.style.opacity='0.5';});
+    
+    // Trik timeout 0 agar ghost drag tidak error/putus warnanya
+    el.addEventListener('dragstart',e=>{draggedItem=el; setTimeout(()=>el.style.opacity='0.4',0);});
     el.addEventListener('dragend',()=>{el.style.opacity='1';draggedItem=null;});
     bank.appendChild(el);
   });
+
   ddData.forEach(d=>{
     const col=document.createElement('div');
+    // Hilangkan teks "Seret ke sini" manual dari sini karena sudah diurus CSS
     col.innerHTML=`<div style="background:var(--blue-light);border-radius:16px;padding:15px;margin-bottom:15px">
       <div class="drop-label" style="color:var(--blue)"><i class="bi bi-box-seam"></i> ${d.shape}</div>
       <div style="font-size:0.85rem;font-weight:600;color:#888;margin-bottom:5px">Keliling:</div>
-      <div class="drop-area" id="drop_k_${d.shape.replace(/ /g,'_')}" data-expect="${d.keliling}"><span style="color:#ccc;font-size:0.9rem">Seret ke sini</span></div>
+      <div class="drop-area" id="drop_k_${d.shape.replace(/ /g,'_')}" data-expect="${d.keliling}"></div>
       <div style="font-size:0.85rem;font-weight:600;color:#888;margin:8px 0 5px">Luas:</div>
-      <div class="drop-area" id="drop_l_${d.shape.replace(/ /g,'_')}" data-expect="${d.luas}"><span style="color:#ccc;font-size:0.9rem">Seret ke sini</span></div>
+      <div class="drop-area" id="drop_l_${d.shape.replace(/ /g,'_')}" data-expect="${d.luas}"></div>
     </div>`;
     targets.appendChild(col);
   });
+
   document.querySelectorAll('.drop-area').forEach(area=>{
     area.addEventListener('dragover',e=>{e.preventDefault();area.classList.add('dragover');});
     area.addEventListener('dragleave',()=>area.classList.remove('dragover'));
     area.addEventListener('drop',e=>{
-      e.preventDefault();area.classList.remove('dragover');if(!draggedItem)return;
-      area.innerHTML='';const clone=draggedItem.cloneNode(true);clone.draggable=false;clone.style.opacity='1';
-      area.appendChild(clone);ddAnswers[area.id]={placed:draggedItem.dataset.formula,expected:area.dataset.expect};
-      draggedItem.style.opacity='0.4';draggedItem.draggable=false;speak('Bagus!',1.1,0.9);
+      e.preventDefault();area.classList.remove('dragover');
+      if(!draggedItem)return;
+
+      // Fitur Canggih: Jika kotak ini sudah terisi, pindahkan rumus lamanya balik ke Bank!
+      if(area.children.length > 0) {
+        bank.appendChild(area.children[0]);
+      }
+
+      // Masukkan kartu yang baru dilepas ke kotak ini
+      area.appendChild(draggedItem);
+      speak('Bagus!',1.1,0.9);
+      updateAnswers();
     });
   });
 }
 
+// Fungsi pembantu untuk sinkronisasi posisi setiap terjadi perpindahan
+function updateAnswers() {
+  ddAnswers = {};
+  document.querySelectorAll('.drop-area').forEach(area => {
+    // Kembalikan background kotak menjadi warna netral saat kartu dicabut / digeser
+    area.style.background = '';
+    area.style.borderColor = 'rgba(0,0,0,0.2)';
+
+    if(area.children.length > 0) {
+      const item = area.children[0];
+      ddAnswers[area.id] = { placed: item.dataset.formula, expected: area.dataset.expect };
+    }
+  });
+  document.getElementById('dragResult').style.display='none';
+}
+
 function checkDragDrop(){
-  let correct=0,total=Object.keys(ddAnswers).length;
+  let correct=0;
+  let totalFilled=Object.keys(ddAnswers).length;
+
+  // Cek apakah 8 kotak sudah diisi semua
+  if(totalFilled < 8) {
+    const dr=document.getElementById('dragResult');dr.style.display='block';
+    dr.innerHTML=`<div style="background:var(--orange-light);border-radius:16px;padding:20px;text-align:center"><div style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--orange)">Isi semua 8 kotak dulu ya!</div></div>`;
+    speak('Isi semua kotak dulu ya!',1,0.85);
+    return;
+  }
+
+  // Cek jawaban
   Object.entries(ddAnswers).forEach(([id,{placed,expected}])=>{
     const el=document.getElementById(id);
     if(placed===expected){correct++;el.style.background='var(--green-light)';el.style.borderColor='var(--green)';}
     else{el.style.background='#FFE0E0';el.style.borderColor='var(--red)';}
   });
+
   const dr=document.getElementById('dragResult');dr.style.display='block';
-  if(correct===8){dr.innerHTML=`<div style="background:var(--green-light);border-radius:16px;padding:20px;text-align:center"><div style="font-size:2rem;color:var(--green)"><i class="bi bi-star-fill"></i></div><div style="font-family:'Fredoka One',cursive;font-size:1.5rem;color:var(--green)">Sempurna! Semua benar!</div></div>`;
-    speak('Luar biasa! Semua jawaban benar!',1.2,0.85);celebrate();addStars(5);}
-  else{dr.innerHTML=`<div style="background:var(--orange-light);border-radius:16px;padding:20px;text-align:center"><div style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--orange)">${correct} dari 8 benar! Coba lagi! <i class="bi bi-emoji-smile"></i></div></div>`;
-    speak(`Kamu benar ${correct} dari delapan.`,1,0.85);}
+  if(correct===8){
+    dr.innerHTML=`<div style="background:var(--green-light);border-radius:16px;padding:20px;text-align:center"><div style="font-size:2rem;color:var(--green)"><i class="bi bi-star-fill"></i></div><div style="font-family:'Fredoka One',cursive;font-size:1.5rem;color:var(--green)">Sempurna! Semua benar!</div></div>`;
+    speak('Luar biasa! Semua jawaban benar!',1.2,0.85);celebrate();addStars(5);
+    // Kunci permainan kalau sudah berhasil 100%
+    document.querySelectorAll('.drag-item').forEach(item => item.draggable = false);
+  } else {
+    // Kalau salah, kasih tau mereka untuk menarik dan menukar kartu yang ada di kotak merah
+    dr.innerHTML=`<div style="background:var(--orange-light);border-radius:16px;padding:20px;text-align:center"><div style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--orange)">${correct} dari 8 benar! Yuk perbaiki yang warnanya merah! <i class="bi bi-arrow-repeat"></i></div></div>`;
+    speak(`Kamu benar ${correct} dari delapan. Ayo pindahkan kartu yang warnanya merah!`,1,0.85);
+  }
 }
-function resetDragDrop(){speak('Ayo mulai lagi!',1.1,0.9);initDragDrop();document.getElementById('dragResult').style.display='none';}
+
+function resetDragDrop(){
+  speak('Ayo mulai lagi!',1.1,0.9);
+  initDragDrop();
+  document.getElementById('dragResult').style.display='none';
+}
 
 // ============================================================
 // SUDUT
@@ -925,20 +1132,48 @@ function drawProtractor(deg){
   currentAngle=deg;const canvas=document.getElementById('protractorCanvas');if(!canvas)return;
   const ctx=canvas.getContext('2d');const cx=160,cy=185,r=150;
   ctx.clearRect(0,0,320,200);ctx.save();
+  
+  // 1. Gambar background busur
   ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,2*Math.PI);ctx.closePath();
   ctx.fillStyle='#FFFDE7';ctx.fill();ctx.strokeStyle='#FFC107';ctx.lineWidth=3;ctx.stroke();
+  
+  // 2. Gambar garis-garis angka derajat
   for(let a=0;a<=180;a+=10){
-    const rad=(180-a)*Math.PI/180;const inner=a%90===0?r-30:a%10===0?r-15:r-8;
-    const x1=cx+Math.cos(rad)*inner,y1=cy-Math.sin(rad)*inner;const x2=cx+Math.cos(rad)*r,y2=cy-Math.sin(rad)*r;
-    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=a%30===0?'#333':'#999';ctx.lineWidth=a%10===0?1.5:0.8;ctx.stroke();
-    if(a%30===0){const tx=cx+Math.cos(rad)*(r-38),ty=cy-Math.sin(rad)*(r-38);ctx.font='bold 11px Nunito';ctx.fillStyle='#555';ctx.textAlign='center';ctx.fillText(a+'°',tx,ty+4);}
+    const rad=(180-a)*Math.PI/180;
+    const inner=a%90===0?r-30:a%10===0?r-15:r-8;
+    const x1=cx+Math.cos(rad)*inner,y1=cy-Math.sin(rad)*inner;
+    const x2=cx+Math.cos(rad)*r,y2=cy-Math.sin(rad)*r;
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
+    ctx.strokeStyle=a%30===0?'#333':'#999';ctx.lineWidth=a%10===0?1.5:0.8;ctx.stroke();
+    if(a%30===0){
+      const tx=cx+Math.cos(rad)*(r-38),ty=cy-Math.sin(rad)*(r-38);
+      ctx.font='bold 11px Nunito';ctx.fillStyle='#555';ctx.textAlign='center';
+      ctx.fillText(a+'°',tx,ty+4);
+    }
   }
-  ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.lineTo(cx+r,cy);ctx.strokeStyle='#333';ctx.lineWidth=2.5;ctx.stroke();
+  
+  // 3. Gambar garis dasar (0 - 180)
+  ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.lineTo(cx+r,cy);
+  ctx.strokeStyle='#333';ctx.lineWidth=2.5;ctx.stroke();
   ctx.beginPath();ctx.arc(cx,cy,6,0,2*Math.PI);ctx.fillStyle='#333';ctx.fill();
-  const rad=(180-deg)*Math.PI/180;const ex=cx+Math.cos(rad)*(r-10),ey=cy-Math.sin(rad)*(r-10);
-  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);ctx.strokeStyle='#FF4757';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+  
+  // 4. Hitung dan gambar garis sudut yang ditarik
+  const rad=(180-deg)*Math.PI/180;
+  const ex=cx+Math.cos(rad)*(r-10),ey=cy-Math.sin(rad)*(r-10);
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);
+  ctx.strokeStyle='#FF4757';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
   ctx.beginPath();ctx.arc(ex,ey,6,0,2*Math.PI);ctx.fillStyle='#FF4757';ctx.fill();
-  if(deg<=180){ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,40,Math.PI,(180-deg)*Math.PI/180,true);ctx.fillStyle='rgba(255,71,87,0.15)';ctx.fill();}
+  
+  // 5. PERBAIKAN: Gambar area arsiran sudut (Arc) yang benar untuk 0 - 360 derajat
+  if(deg > 0){
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    // Mulai dari Math.PI (kiri/0 derajat visual) bergerak clockwise (false) menambah sudut
+    ctx.arc(cx, cy, 40, Math.PI, Math.PI + (deg * Math.PI / 180), false);
+    ctx.closePath();
+    ctx.fillStyle='rgba(255,71,87,0.25)';
+    ctx.fill();
+  }
 }
 
 function updateAngle(val){
@@ -946,12 +1181,37 @@ function updateAngle(val){
   document.getElementById('angleDegDisplay').textContent=currentAngle+'°';
   const label=document.getElementById('angleTypeDisplay');
   let type='';
-  if(currentAngle<90){type='Sudut Lancip <i class="bi bi-triangle-fill text-warning"></i>'}else if(currentAngle===90){type='Sudut Siku-Siku <i class="bi bi-check-circle-fill text-success"></i>'}
-  else if(currentAngle<180){type='Sudut Tumpul <i class="bi bi-record-circle-fill text-primary"></i>'}else if(currentAngle===180){type='Sudut Lurus <i class="bi bi-dash-lg text-danger"></i>'}else{type='Sudut Refleks <i class="bi bi-arrow-repeat text-purple"></i>'}
+  
+  if(currentAngle===0){type='Sudut Nol <i class="bi bi-circle text-secondary"></i>'}
+  else if(currentAngle<90){type='Sudut Lancip <i class="bi bi-triangle-fill text-warning"></i>'}
+  else if(currentAngle===90){type='Sudut Siku-Siku <i class="bi bi-check-circle-fill text-success"></i>'}
+  else if(currentAngle<180){type='Sudut Tumpul <i class="bi bi-record-circle-fill text-primary"></i>'}
+  else if(currentAngle===180){type='Sudut Lurus <i class="bi bi-dash-lg text-danger"></i>'}
+  else if(currentAngle<360){type='Sudut Refleks <i class="bi bi-arrow-repeat text-purple"></i>'}
+  else {type='Sudut Penuh <i class="bi bi-circle-fill text-info"></i>'}
+  
   label.innerHTML=type;
 }
-function readAngle(){speak(`Sudut yang ditunjukkan adalah ${currentAngle} derajat. ${currentAngle<90?'Ini termasuk sudut lancip':currentAngle===90?'Ini adalah sudut siku siku':currentAngle<180?'Ini termasuk sudut tumpul':currentAngle===180?'Ini adalah sudut lurus':'Ini adalah sudut refleks'}!`,1.1,0.85);}
-function randomAngle(){const a=Math.floor(Math.random()*358)+1;document.getElementById('angleSlider').value=a;updateAngle(a);speak(`Sudut baru! ${a} derajat!`,1.2,0.9);}
+
+function readAngle(){
+  let jenis = '';
+  if(currentAngle===0) jenis = 'Ini adalah sudut nol';
+  else if(currentAngle<90) jenis = 'Ini termasuk sudut lancip';
+  else if(currentAngle===90) jenis = 'Ini adalah sudut siku siku';
+  else if(currentAngle<180) jenis = 'Ini termasuk sudut tumpul';
+  else if(currentAngle===180) jenis = 'Ini adalah sudut lurus';
+  else if(currentAngle<360) jenis = 'Ini adalah sudut refleks';
+  else jenis = 'Ini adalah sudut penuh putaran';
+  
+  speak(`Sudut yang ditunjukkan adalah ${currentAngle} derajat. ${jenis}!`,1.1,0.85);
+}
+
+function randomAngle(){
+  const a=Math.floor(Math.random()*361); // Acak dari 0 sampai 360
+  document.getElementById('angleSlider').value=a;
+  updateAngle(a);
+  speak(`Sudut baru! ${a} derajat!`,1.2,0.9);
+}
 
 const latihanSudut=[
   {q:'Sudut berapa yang disebut sudut siku-siku?',opts:['45°','90°','180°','120°'],ans:1},
@@ -977,13 +1237,13 @@ function renderLatihan(){
 function answerLatihan(idx){
   const q=latihanSudut[latihanIdx];const btns=document.querySelectorAll('#latihanContent .quiz-opt');
   btns.forEach(b=>b.style.pointerEvents='none');
-  if(idx===q.ans){latihanScore++;btns[idx].classList.add('correct');speak('Benar!',1.2,0.9);celebrate();addStars(1);setMascot('','benar');}
-  else{btns[idx].classList.add('wrong');btns[q.ans].classList.add('correct');speak('Belum tepat, jawaban yang benar adalah '+q.opts[q.ans],1,0.85);setMascot('','salah');}
+  if(idx===q.ans){playSound('benar');latihanScore++;btns[idx].classList.add('correct');celebrate();addStars(1);setMascot('','benar');}
+  else{playSound('salah');btns[idx].classList.add('wrong');btns[q.ans].classList.add('correct');setMascot('','salah');}
   setTimeout(()=>{latihanIdx++;renderLatihan();},1800);
 }
 
 // ============================================================
-// KUIS (WITH TIMER & STREAK)
+// KUIS (WITH HOLD TIMER & STREAK)
 // ============================================================
 const quizQuestions=[
   {q:'Rumus luas persegi dengan sisi s adalah...',opts:['s + s','4 × s','s × s','2 × s'],ans:2},
@@ -1000,11 +1260,21 @@ const quizQuestions=[
 
 let qIdx=0,qScore=0,quizDone=false,quizTimer=null,timeLeft=15,quizStreak=0;
 
+// Fungsi inisiasi Kuis: Kini hanya membuka layaknya Start Screen, timer belum nyala.
 function initQuiz(){
   qIdx=0;qScore=0;quizDone=false;quizStreak=0;
+  isPlayingGame=false;
   document.getElementById('congratsScreen').classList.remove('show');
+  document.getElementById('quizCard').style.display='none';
+  document.getElementById('quizStartScreen').style.display='block';
+  if(typeof quizTimer !== 'undefined') clearInterval(quizTimer);
+}
+
+// Fungsi Trigger Saat Mengklik Tombol 'Mulai Kuis'
+function startQuizGame(){
+  isPlayingGame = true; // Tandai user masuk gameplay (agar tidak kabur tanpa notif)
+  document.getElementById('quizStartScreen').style.display='none';
   document.getElementById('quizCard').style.display='block';
-  clearInterval(quizTimer);
   renderQuiz();
 }
 
@@ -1033,6 +1303,7 @@ function timeoutQuiz(){
   btns[quizQuestions[qIdx].ans].classList.add('correct');
   quizStreak=0;
   document.getElementById('streakShow').innerHTML='<div style="color:#FF4757;font-family:Fredoka One,cursive;font-size:1rem"><i class="bi bi-clock-history"></i> Waktu Habis!</div>';
+  playSound('salah');
   speak('Waktu habis! Jawabannya adalah '+quizQuestions[qIdx].opts[quizQuestions[qIdx].ans],1,0.85);
   setMascot('','salah');
   setTimeout(()=>{qIdx++;renderQuiz();},2000);
@@ -1064,18 +1335,19 @@ function answerQuiz(idx){
     qScore++;quizStreak++;
     btns[idx].classList.add('correct');
     if(quizStreak>=3){speak('STREAK LUAR BIASA! '+quizStreak+' berturut-turut!',1.3,0.9);addStars(quizStreak);}
-    else{speak('Betul!',1.2,0.9);addStars(1);}
+    else{playSound('benar');addStars(1);}
     celebrate();setMascot('','benar');
     addStreak();
   } else {
     btns[idx].classList.add('wrong');btns[q.ans].classList.add('correct');
-    speak('Hmm, belum tepat.',1,0.85);quizStreak=0;resetStreak();setMascot('','salah');
+    playSound('salah');quizStreak=0;resetStreak();setMascot('','salah');
   }
   setTimeout(()=>{qIdx++;renderQuiz();},2000);
 }
 
 function endQuiz(){
   clearInterval(quizTimer);
+  isPlayingGame = false; // Matikan status sedang bermain saat kuis usai
   document.getElementById('quizCard').style.display='none';
   const cs=document.getElementById('congratsScreen');cs.classList.add('show');
   document.getElementById('finalScore').textContent=qScore+'/10';
@@ -1097,7 +1369,11 @@ function endQuiz(){
   else if(pct>=0.7){showReward('good',qScore);if(pct>=0.7)celebrate();}
   else showReward('ok',qScore);
 }
-function restartQuiz(){initQuiz();}
+function restartQuiz(){
+  qIdx=0;qScore=0;quizDone=false;quizStreak=0;
+  document.getElementById('congratsScreen').classList.remove('show');
+  startQuizGame();
+}
 
 // ============================================================
 // CELEBRATE
@@ -1139,6 +1415,7 @@ function startGame(type){
 }
 
 function initShadowGame(){
+  isPlayingGame = true;
   shadowScore=0;shadowIdx=0;
   renderShadowQuestion();
   speak('Tebak bayangannya! Ayo mulai!',1.1,0.85);
@@ -1147,6 +1424,7 @@ function initShadowGame(){
 function renderShadowQuestion(){
   const area=document.getElementById('gameContent');
   if(shadowIdx>=shadowTotal){
+    isPlayingGame = false;
     area.innerHTML=`<div style="text-align:center;padding:30px">
       <div style="font-size:4rem;color:var(--yellow)"><i class="bi bi-star-fill"></i></div>
       <div style="font-family:'Fredoka One',cursive;font-size:2rem;color:var(--purple)">Selesai!</div>
@@ -1177,26 +1455,36 @@ function renderShadowQuestion(){
 
 function answerShadow(chosen,correct,btn){
   document.querySelectorAll('.shadow-opt').forEach(b=>b.style.pointerEvents='none');
-  if(chosen===correct){shadowScore++;btn.classList.add('correct');speak('Benar! Itu '+correct+'!',1.2,0.9);celebrate();addStars(1);setMascot('','benar');}
-  else{btn.classList.add('wrong');speak('Belum tepat! Itu '+correct,1,0.85);setMascot('','salah');
+  if(chosen===correct){shadowScore++;btn.classList.add('correct');playSound('benar');celebrate();addStars(1);setMascot('','benar');}
+  else{btn.classList.add('wrong');playSound('salah');setMascot('','salah');
     document.querySelectorAll('.shadow-opt').forEach(b=>{if(b.textContent===correct||b.textContent.trim()===correct)b.classList.add('correct');});}
   shadowIdx++;setTimeout(renderShadowQuestion,1800);
 }
 
 // ============================================================
-// MINI GAME: MEMORY MATCH
+// MINI GAME: MEMORY MATCH (Dengan Ikon Vector SVG & Formatting Khusus Teks)
 // ============================================================
 const memPairs=[
-  {a:'Persegi',b:'K = 4×s'},{a:'Lingkaran',b:'L = πr²'},
-  {a:'Segitiga',b:'L = ½×a×t'},{a:'Trapesium',b:'L = ½(a+b)t'},
-  {a:'Persegi Panjang',b:'K = 2(p+l)'},{a:'Jajar Genjang',b:'L = a×t'},
-  {a:'Persegi',b:'L = s×s'},{a:'Lingkaran',b:'K = 2πr'},
+  {id:1, a:'<svg viewBox="0 0 100 100" width="55" height="55"><rect x="15" y="15" width="70" height="70" fill="var(--pink)" rx="4" stroke="#c94f7c" stroke-width="3"/></svg>', b:'K = 4×s'},
+  {id:2, a:'<svg viewBox="0 0 100 100" width="55" height="55"><circle cx="50" cy="50" r="42" fill="var(--yellow)" stroke="#cc9900" stroke-width="3"/></svg>', b:'L = πr²'},
+  {id:3, a:'<svg viewBox="0 0 100 100" width="55" height="55"><polygon points="50,8 95,92 5,92" fill="var(--green)" stroke="#3a8a3a" stroke-width="3"/></svg>', b:'L = ½×a×t'},
+  {id:4, a:'<svg viewBox="0 0 100 100" width="55" height="55"><polygon points="20,85 80,85 70,20 30,20" fill="var(--purple)" stroke="#6c3483" stroke-width="3"/></svg>', b:'L = ½(a+b)t'},
+  {id:5, a:'<svg viewBox="0 0 100 100" width="55" height="55"><rect x="5" y="25" width="90" height="50" fill="var(--blue)" rx="4" stroke="#2a6acc" stroke-width="3"/></svg>', b:'K = 2(p+l)'},
+  {id:6, a:'<svg viewBox="0 0 100 100" width="55" height="55"><polygon points="20,85 80,85 95,20 35,20" fill="var(--orange)" stroke="#cc6600" stroke-width="3"/></svg>', b:'L = a×t'},
+  {id:7, a:'<svg viewBox="0 0 100 100" width="55" height="55"><rect x="15" y="15" width="70" height="70" fill="var(--pink)" rx="4" stroke="#c94f7c" stroke-width="3"/></svg>', b:'L = s×s'},
+  {id:8, a:'<svg viewBox="0 0 100 100" width="55" height="55"><circle cx="50" cy="50" r="42" fill="var(--yellow)" stroke="#cc9900" stroke-width="3"/></svg>', b:'K = 2πr'},
 ];
 
 let memFlipped=[],memMatched=0,memLocked=false,memMoves=0;
 
 function initMemoryGame(){
-  const cards=[...memPairs.flatMap(p=>[{text:p.a,pair:p.a+p.b,type:'shape'},{text:p.b,pair:p.a+p.b,type:'formula'}])].sort(()=>Math.random()-0.5);
+  isPlayingGame = true;
+  // Memasukkan array berisi gambar SVG dan tag div terformat agar font rumusnya muat dengan baik
+  const cards=[...memPairs.flatMap(p=>[
+    {text:p.a, pair:p.id},
+    {text:`<div style="font-size:1.1rem; line-height:1.2; white-space:nowrap; text-align:center;">${p.b}</div>`, pair:p.id}
+  ])].sort(()=>Math.random()-0.5);
+  
   memFlipped=[];memMatched=0;memLocked=false;memMoves=0;
   const area=document.getElementById('gameContent');
   area.innerHTML=`
@@ -1205,13 +1493,13 @@ function initMemoryGame(){
     <div class="memory-grid" id="memoryGrid">
       ${cards.map((c,i)=>`
         <div class="memory-card-wrap" onclick="flipCard(${i})">
-          <div class="memory-card" id="mc${i}" data-pair="${c.pair}" data-text="${c.text}">
+          <div class="memory-card" id="mc${i}" data-pair="${c.pair}">
             <div class="memory-front"><i class="bi bi-question-circle-fill"></i></div>
             <div class="memory-back">${c.text}</div>
           </div>
         </div>`).join('')}
     </div>`;
-  speak('Kartu ingatan! Klik kartu untuk membukanya, cari pasangannya!',1.1,0.85);
+  speak('Kartu ingatan! Klik kartu untuk membukanya, cari pasangan bangun datar dan rumusnya!',1.1,0.85);
 }
 
 function flipCard(idx){
@@ -1219,19 +1507,25 @@ function flipCard(idx){
   const card=document.getElementById('mc'+idx);
   if(card.classList.contains('flipped')||card.classList.contains('matched'))return;
   card.classList.add('flipped');
-  memFlipped.push({idx,card,pair:card.dataset.pair,text:card.dataset.text});
+  memFlipped.push({idx, card, pair:card.dataset.pair});
+  
   if(memFlipped.length===2){
     memLocked=true;memMoves++;document.getElementById('memMoves').textContent=memMoves;
     const [a,b]=memFlipped;
-    if(a.pair===b.pair&&a.text!==b.text){
+    
+    // Mengecek apakah pasangan kartu sama (id pairs matched) TETAPI bukan kartu yang di-klik dua kali
+    if(a.pair===b.pair && a.idx !== b.idx){
       // MATCH
+      playSound('benar');
       setTimeout(()=>{
         a.card.classList.add('matched');b.card.classList.add('matched');
         a.card.querySelector('.memory-back').classList.add('matched-bg');
         b.card.querySelector('.memory-back').classList.add('matched-bg');
         memMatched++;memFlipped=[];memLocked=false;
         celebrate();addStars(1);speak('Cocok! Luar biasa!',1.2,0.9);
+        
         if(memMatched===memPairs.length){
+          isPlayingGame = false;
           setTimeout(()=>{
             document.getElementById('gameContent').innerHTML+=`<div style="text-align:center;padding:20px;margin-top:15px;background:var(--green-light);border-radius:20px"><div style="font-size:3rem;color:var(--green)"><i class="bi bi-trophy-fill"></i></div><div style="font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--green)">Semua Cocok!</div><div style="font-size:1.1rem;font-weight:700;color:#555">${memMoves} gerakan</div><button class="calc-btn" onclick="initMemoryGame()" style="margin-top:15px;background:var(--purple)"><i class="bi bi-arrow-repeat"></i> Main Lagi!</button></div>`;
             celebrate();addStars(5);speak('Semua kartu cocok! Hebat sekali!',1.2,0.85);
@@ -1239,6 +1533,7 @@ function flipCard(idx){
         }
       },600);
     } else {
+      playSound('salah');
       setTimeout(()=>{a.card.classList.remove('flipped');b.card.classList.remove('flipped');memFlipped=[];memLocked=false;},1000);
     }
   }
@@ -1250,7 +1545,10 @@ function flipCard(idx){
 let whackScore=0,whackTimer=null,whackQ=null,whackTime=30;
 
 function initWhackGame(){
+  isPlayingGame = true;
   whackScore=0;whackTime=30;
+  if(whackTimer) clearInterval(whackTimer); // Bersihkan timer yang mungkin masih sisa
+  
   const area=document.getElementById('gameContent');
   area.innerHTML=`
     <h3 style="font-family:'Fredoka One',cursive;color:var(--orange);font-size:1.5rem;text-align:center;margin-bottom:5px"><i class="bi bi-hammer"></i> Pukul Angkanya!</h3>
@@ -1261,9 +1559,10 @@ function initWhackGame(){
     <div id="whackQuestion" style="font-family:'Fredoka One',cursive;font-size:2.5rem;text-align:center;color:var(--dark);margin:15px 0;animation:questionPop .3s"></div>
     <div id="whackGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:400px;margin:0 auto"></div>`;
   nextWhack();
-  const countdown=setInterval(()=>{
+  
+  whackTimer = setInterval(()=>{
     whackTime--;document.getElementById('whackTime').textContent=whackTime;
-    if(whackTime<=0){clearInterval(countdown);clearTimeout(whackTimer);endWhack();}
+    if(whackTime<=0){clearInterval(whackTimer);endWhack();}
   },1000);
   speak('Pukul kotak jawaban yang benar! Secepat mungkin!',1.1,0.85);
 }
@@ -1288,16 +1587,19 @@ function nextWhack(){
 function hitWhack(val,btn){
   if(!whackQ)return;
   if(val===whackQ.ans){
+    playSound('benar');
     btn.style.background='var(--green)';btn.style.color='#fff';
     whackScore++;document.getElementById('whackScore').textContent=whackScore;
     addStars(1);
   } else {
+    playSound('salah');
     btn.style.background='var(--red)';btn.style.color='#fff';
   }
   setTimeout(nextWhack,400);
 }
 
 function endWhack(){
+  isPlayingGame = false;
   const area=document.getElementById('gameContent');
   area.innerHTML=`<div style="text-align:center;padding:30px">
     <div style="font-size:4rem;color:var(--orange)"><i class="bi bi-hammer"></i></div>
@@ -1316,6 +1618,7 @@ let speedLevel='mudah',speedQ=0,speedScore=0,speedCombo=0,speedTotal=15;
 let speedTimer=null,speedTimeLeft=8,speedCorrectAns=0;
 
 function startSpeedGame(level){
+  isPlayingGame = true; // Tandai agar dicegat jika player ganti navigasi tab tiba-tiba
   speedLevel=level;speedQ=0;speedScore=0;speedCombo=0;
   document.getElementById('speedGameArea').style.display='none';
   document.getElementById('speedGameResult').style.display='none';
@@ -1326,7 +1629,8 @@ function startSpeedGame(level){
 }
 
 function stopSpeedGame(){
-  clearInterval(speedTimer);showSpeedResult();
+  clearInterval(speedTimer);
+  showSpeedResult();
 }
 
 function nextSpeedQuestion(){
@@ -1380,6 +1684,7 @@ function checkSpeedAnswer(){
   const val=parseInt(document.getElementById('speedInput').value);
   if(isNaN(val))return;
   if(val===speedCorrectAns){
+    playSound('benar');
     clearInterval(speedTimer);speedQ++;speedScore++;speedCombo++;
     const fb=document.getElementById('speedFeedback');
     fb.style.color='var(--green)';
@@ -1390,6 +1695,7 @@ function checkSpeedAnswer(){
 }
 
 function speedTimeoutQ(){
+  playSound('salah');
   speedQ++;speedCombo=0;
   document.getElementById('speedFeedback').style.color='var(--red)';
   document.getElementById('speedFeedback').innerHTML='<i class="bi bi-stopwatch"></i> Waktu habis! Jawaban: '+speedCorrectAns;
@@ -1397,6 +1703,7 @@ function speedTimeoutQ(){
 }
 
 function showSpeedResult(){
+  isPlayingGame = false;
   clearInterval(speedTimer);
   document.getElementById('speedGamePlay').style.display='none';
   document.getElementById('speedGameResult').style.display='block';
