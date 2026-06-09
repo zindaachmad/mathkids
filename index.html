@@ -1219,23 +1219,45 @@ const latihanSudut=[
   {q:'Sudut 150° termasuk jenis sudut apa?',opts:['Lancip','Siku-siku','Tumpul','Refleks'],ans:2},
   {q:'Sudut berapa yang membentuk garis lurus?',opts:['90°','270°','360°','180°'],ans:3},
   {q:'Mana yang termasuk sudut lancip?',opts:['95°','30°','180°','200°'],ans:1},
+  {q:'Sudut 200° termasuk jenis sudut apa?',opts:['Lancip','Siku-siku','Refleks','Tumpul'],ans:2},
+  {q:'Sudut antara 90° dan 180° disebut...',opts:['Lancip','Tumpul','Lurus','Refleks'],ans:1},
+  {q:'Jarum jam pada pukul 03.00 membentuk sudut...',opts:['90°','45°','180°','60°'],ans:0},
+  {q:'Sudut 89° termasuk sudut...',opts:['Siku-siku','Lancip','Tumpul','Lurus'],ans:1},
+  {q:'Gabungan dua sudut siku-siku akan membentuk sudut...',opts:['Lancip','Tumpul','Lurus','Refleks'],ans:2},
+  {q:'Sudut yang ukurannya tepat 180 derajat adalah...',opts:['Sudut Lurus','Siku-siku','Tumpul','Penuh'],ans:0},
+  {q:'Manakah dari berikut yang merupakan sudut refleks?',opts:['150°','90°','210°','45°'],ans:2},
+  {q:'Jarum jam pada pukul 06.00 membentuk sudut...',opts:['90°','180°','360°','120°'],ans:1},
+  {q:'Sudut 10° termasuk sudut...',opts:['Lancip','Siku-siku','Tumpul','Refleks'],ans:0},
+  {q:'Jika sebuah sudut besarnya 300°, maka sudut tersebut...',opts:['Tumpul','Refleks','Lurus','Lancip'],ans:1}
 ];
-let latihanIdx=0,latihanScore=0;
-function initLatihan(){latihanIdx=0;latihanScore=0;renderLatihan();speak('Yuk latihan soal sudut!',1.1,0.85);}
+
+let latihanIdx=0, latihanScore=0, latihanTotal=5;
+let activeLatihan = [];
+
+function initLatihan(){
+  latihanIdx=0; latihanScore=0;
+  // Mengacak seluruh bank soal, lalu hanya mengambil 5 soal teratas
+  activeLatihan = [...latihanSudut].sort(()=>Math.random()-0.5).slice(0, latihanTotal);
+  renderLatihan();
+  speak('Yuk latihan soal sudut!',1.1,0.85);
+}
+
 function renderLatihan(){
   const lc=document.getElementById('latihanContent');
-  if(latihanIdx>=latihanSudut.length){
-    lc.innerHTML=`<div style="text-align:center;padding:30px"><div style="font-size:3rem;color:var(--yellow)"><i class="bi bi-star-fill"></i></div><div style="font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--purple)">Selesai! Nilaimu ${latihanScore}/${latihanSudut.length}</div><button class="calc-btn" onclick="initLatihan()" style="margin-top:20px;background:var(--purple)"><i class="bi bi-arrow-repeat"></i> Ulangi Latihan</button></div>`;
-    speak(`Selesai! Kamu mendapat nilai ${latihanScore} dari ${latihanSudut.length}.`,1.1,0.85);
+  if(latihanIdx>=latihanTotal){
+    lc.innerHTML=`<div style="text-align:center;padding:30px"><div style="font-size:3rem;color:var(--yellow)"><i class="bi bi-star-fill"></i></div><div style="font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--purple)">Selesai! Nilaimu ${latihanScore}/${latihanTotal}</div><button class="calc-btn" onclick="initLatihan()" style="margin-top:20px;background:var(--purple)"><i class="bi bi-arrow-repeat"></i> Ulangi Latihan</button></div>`;
+    speak(`Selesai! Kamu mendapat nilai ${latihanScore} dari ${latihanTotal}.`,1.1,0.85);
     if(latihanScore>=4){celebrate();addStars(3);}return;
   }
-  const q=latihanSudut[latihanIdx];
+  const q=activeLatihan[latihanIdx];
   let optsHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerLatihan(${i})">${o}</button>`).join('');
-  lc.innerHTML=`<div class="quiz-card"><div style="margin-bottom:15px;font-family:'Fredoka One',cursive;font-size:0.95rem;color:rgba(255,255,255,0.8)">Soal ${latihanIdx+1}/${latihanSudut.length} | Skor: <i class="bi bi-star-fill text-warning"></i> ${latihanScore}</div><div class="quiz-q">${q.q}</div><div class="quiz-options">${optsHTML}</div></div>`;
+  lc.innerHTML=`<div class="quiz-card"><div style="margin-bottom:15px;font-family:'Fredoka One',cursive;font-size:0.95rem;color:rgba(255,255,255,0.8)">Soal ${latihanIdx+1}/${latihanTotal} | Skor: <i class="bi bi-star-fill text-warning"></i> ${latihanScore}</div><div class="quiz-q">${q.q}</div><div class="quiz-options">${optsHTML}</div></div>`;
   speak(q.q,1,0.85);
 }
+
 function answerLatihan(idx){
-  const q=latihanSudut[latihanIdx];const btns=document.querySelectorAll('#latihanContent .quiz-opt');
+  const q=activeLatihan[latihanIdx];
+  const btns=document.querySelectorAll('#latihanContent .quiz-opt');
   btns.forEach(b=>b.style.pointerEvents='none');
   if(idx===q.ans){playSound('benar');latihanScore++;btns[idx].classList.add('correct');celebrate();addStars(1);setMascot('','benar');}
   else{playSound('salah');btns[idx].classList.add('wrong');btns[q.ans].classList.add('correct');setMascot('','salah');}
@@ -1249,30 +1271,47 @@ const quizQuestions=[
   {q:'Rumus luas persegi dengan sisi s adalah...',opts:['s + s','4 × s','s × s','2 × s'],ans:2},
   {q:'Persegi panjang 8cm × 5cm. Berapakah kelilingnya?',opts:['40 cm','26 cm','13 cm','80 cm'],ans:1},
   {q:'Sudut 75° termasuk sudut...',opts:['Tumpul','Lurus','Siku-siku','Lancip'],ans:3},
-  {q:'Luas lingkaran r=7cm adalah... (π=3.14)',opts:['43.96 cm²','153.86 cm²','21.98 cm²','49 cm²'],ans:1},
+  {q:'Luas lingkaran r=7cm adalah... (π=22/7)',opts:['43.96 cm²','154 cm²','21.98 cm²','49 cm²'],ans:1},
   {q:'Segitiga alas 10cm tinggi 6cm. Luasnya?',opts:['60 cm²','30 cm²','16 cm²','32 cm²'],ans:1},
   {q:'Sudut siku-siku besarnya...',opts:['45°','60°','90°','180°'],ans:2},
   {q:'Rumus keliling lingkaran adalah...',opts:['π × r²','2 × π × r','π × d²','r × r'],ans:1},
   {q:'Persegi sisi 6cm. Kelilingnya adalah...',opts:['12 cm','36 cm','24 cm','18 cm'],ans:2},
-  {q:'Sudut antara 90° dan 180° disebut...',opts:['Lancip','Siku-siku','Tumpul','Refleks'],ans:2},
   {q:'Jajar genjang alas 9cm tinggi 4cm. Luasnya?',opts:['26 cm²','13 cm²','36 cm²','18 cm²'],ans:2},
+  {q:'Rumus keliling segitiga sama sisi (sisi s) adalah...',opts:['3 × s','s × s','s + s','½ × s'],ans:0},
+  {q:'Luas persegi panjang 50 cm². Panjangnya 10 cm, berapakah lebarnya?',opts:['4 cm','5 cm','6 cm','10 cm'],ans:1},
+  {q:'Bangun datar yang tidak memiliki titik sudut adalah...',opts:['Lingkaran','Segitiga','Persegi','Trapesium'],ans:0},
+  {q:'Keliling persegi adalah 20 cm. Berapa panjang sisinya?',opts:['4 cm','5 cm','10 cm','20 cm'],ans:1},
+  {q:'Sebuah segitiga luasnya 20 cm², alas 8 cm. Tingginya?',opts:['5 cm','4 cm','10 cm','8 cm'],ans:0},
+  {q:'Rumus luas trapesium adalah...',opts:['a × t','½ × (a+b) × t','½ × a × t','s × s'],ans:1},
+  {q:'Dua garis yang membentuk sudut 90° saling...',opts:['Sejajar','Berpotongan','Tegak lurus','Berimpit'],ans:2},
+  {q:'Berapa keliling jajar genjang sisi 5 cm dan 7 cm?',opts:['12 cm','24 cm','35 cm','17 cm'],ans:1},
+  {q:'Sebuah sudut lurus dibagi dua sama besar menjadi...',opts:['Lancip','Tumpul','Siku-siku','Refleks'],ans:2},
+  {q:'Lingkaran memiliki diameter 14 cm. Jari-jarinya?',opts:['7 cm','14 cm','21 cm','28 cm'],ans:0},
+  {q:'Luas persegi dengan sisi 9 cm adalah...',opts:['18 cm²','36 cm²','81 cm²','90 cm²'],ans:2},
+  {q:'Keliling persegi panjang p=12cm, l=8cm adalah...',opts:['20 cm','40 cm','96 cm','48 cm'],ans:1},
+  {q:'Segitiga dengan ketiga sisi sama panjang disebut...',opts:['Siku-siku','Sama kaki','Sembarang','Sama sisi'],ans:3},
+  {q:'Belah ketupat termasuk ke dalam keluarga...',opts:['Segi empat','Segitiga','Lingkaran','Segi lima'],ans:0}
 ];
 
-let qIdx=0,qScore=0,quizDone=false,quizTimer=null,timeLeft=15,quizStreak=0;
+let qIdx=0, qScore=0, quizDone=false, quizTimer=null, timeLeft=15, quizStreak=0;
+let activeQuiz = [];
+let quizTotal = 10;
 
-// Fungsi inisiasi Kuis: Kini hanya membuka layaknya Start Screen, timer belum nyala.
 function initQuiz(){
-  qIdx=0;qScore=0;quizDone=false;quizStreak=0;
+  qIdx=0; qScore=0; quizDone=false; quizStreak=0;
   isPlayingGame=false;
+  
+  // Mengacak 25 soal di bank, ambil 10 soal unik saja
+  activeQuiz = [...quizQuestions].sort(()=>Math.random()-0.5).slice(0, quizTotal);
+  
   document.getElementById('congratsScreen').classList.remove('show');
   document.getElementById('quizCard').style.display='none';
   document.getElementById('quizStartScreen').style.display='block';
   if(typeof quizTimer !== 'undefined') clearInterval(quizTimer);
 }
 
-// Fungsi Trigger Saat Mengklik Tombol 'Mulai Kuis'
 function startQuizGame(){
-  isPlayingGame = true; // Tandai user masuk gameplay (agar tidak kabur tanpa notif)
+  isPlayingGame = true; 
   document.getElementById('quizStartScreen').style.display='none';
   document.getElementById('quizCard').style.display='block';
   renderQuiz();
@@ -1295,84 +1334,6 @@ function startTimer(){
       timeoutQuiz();
     }
   },1000);
-}
-
-function timeoutQuiz(){
-  const btns=document.querySelectorAll('#quizOptions .quiz-opt');
-  btns.forEach(b=>b.style.pointerEvents='none');
-  btns[quizQuestions[qIdx].ans].classList.add('correct');
-  quizStreak=0;
-  document.getElementById('streakShow').innerHTML='<div style="color:#FF4757;font-family:Fredoka One,cursive;font-size:1rem"><i class="bi bi-clock-history"></i> Waktu Habis!</div>';
-  playSound('salah');
-  speak('Waktu habis! Jawabannya adalah '+quizQuestions[qIdx].opts[quizQuestions[qIdx].ans],1,0.85);
-  setMascot('','salah');
-  setTimeout(()=>{qIdx++;renderQuiz();},2000);
-}
-
-function renderQuiz(){
-  if(qIdx>=quizQuestions.length){endQuiz();return;}
-  const q=quizQuestions[qIdx];
-  document.getElementById('qNum').textContent=qIdx+1;
-  document.getElementById('qScore').textContent=qScore;
-  document.getElementById('quizProgress').style.width=((qIdx/quizQuestions.length)*100)+'%';
-  document.getElementById('quizQuestion').textContent=q.q;
-  document.getElementById('quizShape').innerHTML='';
-  const optsEl=document.getElementById('quizOptions');
-  optsEl.innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${o}</button>`).join('');
-  // show streak
-  if(quizStreak>=2){document.getElementById('streakShow').innerHTML=`<div class="streak-display"><i class="bi bi-fire text-danger"></i> Streak ${quizStreak}x! Luar biasa!</div>`;}
-  else{document.getElementById('streakShow').innerHTML='';}
-  speak(q.q,1,0.85);
-  startTimer();
-}
-
-function answerQuiz(idx){
-  clearInterval(quizTimer);
-  const q=quizQuestions[qIdx];
-  const btns=document.querySelectorAll('#quizOptions .quiz-opt');
-  btns.forEach(b=>b.style.pointerEvents='none');
-  if(idx===q.ans){
-    qScore++;quizStreak++;
-    btns[idx].classList.add('correct');
-    if(quizStreak>=3){speak('STREAK LUAR BIASA! '+quizStreak+' berturut-turut!',1.3,0.9);addStars(quizStreak);}
-    else{playSound('benar');addStars(1);}
-    celebrate();setMascot('','benar');
-    addStreak();
-  } else {
-    btns[idx].classList.add('wrong');btns[q.ans].classList.add('correct');
-    playSound('salah');quizStreak=0;resetStreak();setMascot('','salah');
-  }
-  setTimeout(()=>{qIdx++;renderQuiz();},2000);
-}
-
-function endQuiz(){
-  clearInterval(quizTimer);
-  isPlayingGame = false; // Matikan status sedang bermain saat kuis usai
-  document.getElementById('quizCard').style.display='none';
-  const cs=document.getElementById('congratsScreen');cs.classList.add('show');
-  document.getElementById('finalScore').textContent=qScore+'/10';
-  const pct=qScore/10;
-  let msg=pct>=0.9?'<i class="bi bi-star-fill text-warning"></i> Luar biasa! Kamu sangat cerdas!':pct>=0.7?'<i class="bi bi-hand-thumbs-up-fill text-primary"></i> Bagus sekali! Terus belajar ya!':pct>=0.5?'<i class="bi bi-emoji-smile-fill text-success"></i> Lumayan! Latihan lagi ya!':'<i class="bi bi-book-half"></i> Yuk belajar lagi! Kamu pasti bisa!';
-  document.getElementById('scoreMsg').innerHTML=msg;
-  const starsEarned=pct>=0.9?5:pct>=0.7?4:pct>=0.5?3:2;
-  
-  let starsHtml = '';
-  for(let i=0; i<starsEarned; i++) { starsHtml += '<i class="bi bi-star-fill"></i>'; }
-  document.getElementById('quizStarsEarned').innerHTML= starsHtml + ' +'+qScore*2+' bintang!';
-  
-  addStars(qScore*2);
-  if(gameState.bestQuizScore==='-'||qScore>parseInt(gameState.bestQuizScore)){
-    gameState.bestQuizScore=qScore+'/10';updateStats();saveState();
-  }
-  speak(`Kuis selesai! Kamu mendapat nilai ${qScore} dari 10!`,1.1,0.8);
-  if(pct>=1.0)showReward('perfect',qScore);
-  else if(pct>=0.7){showReward('good',qScore);if(pct>=0.7)celebrate();}
-  else showReward('ok',qScore);
-}
-function restartQuiz(){
-  qIdx=0;qScore=0;quizDone=false;quizStreak=0;
-  document.getElementById('congratsScreen').classList.remove('show');
-  startQuizGame();
 }
 
 // ============================================================
